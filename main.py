@@ -2,54 +2,52 @@
 # -*- coding:utf-8 -*-
 
 import SH1106
-import time
+import time, subprocess
 import config
 import traceback
-
+from datetime import datetime
 from PIL import Image,ImageDraw,ImageFont
+
+def getip():
+    ip="- no IP -"
+    for dev in ('eth0','wlan0'):
+        w=str( subprocess.run(["ip -4 a l "+dev+"|grep inet"], shell=True, capture_output=True, text=True ).stdout ).split()
+        if( len(w)>1 ):
+            ip = w[1]
+            break
+    return ip            
+
+def show_clock():
+    image = Image.new('1', (disp.width, disp.height), "WHITE")
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.truetype('fonts/cour.ttf', 26)
+    font10 = ImageFont.truetype('fonts/cour.ttf',12)
+    now = datetime.now() # current date and time
+    buf = now.strftime("%H:%M:%S")
+    (sx,sy)=font.getsize(buf)
+    draw.text( ( int((128-sx)/2), 5 ), buf, font = font, fill = 0)
+    ip=getip()
+    (sx,sy)=font10.getsize(ip)
+    draw.text((int((128-sx)/2),52), ip, font = font10, fill = 0)
+    return image
+    
+    
 
 try:
     disp = SH1106.SH1106()
-
     # Initialize library.
     disp.Init()
-    print("\r\nJetson Nano Test program")
-    print("Longer refresh time")
-    # Clear display.
     disp.clear()
 
-    # Create blank image for drawing.
-    image1 = Image.new('1', (disp.width, disp.height), "WHITE")
-    draw = ImageDraw.Draw(image1)
-    font = ImageFont.truetype('Font.ttf', 20)
-    font10 = ImageFont.truetype('Font.ttf',13)
-    print ("***draw line")
-    draw.line([(0,0),(127,0)], fill = 0)
-    draw.line([(0,0),(0,63)], fill = 0)
-    draw.line([(0,63),(127,63)], fill = 0)
-    draw.line([(127,0),(127,63)], fill = 0)
-    print ("***draw rectangle")
-    
-    print ("***draw text")
-    draw.text((30,0), 'Waveshare ', font = font10, fill = 0)
-    draw.text((28,20), u'微雪电子 ', font = font, fill = 0)
-
-    image1=image1.rotate(180) 
-    disp.ShowImage(disp.getbuffer(image1))
-    time.sleep(2)
-
-    
-    print ("***draw image")
-    Himage2 = Image.new('1', (disp.width, disp.height), 255)  # 255: clear the frame
-    bmp = Image.open('pic.bmp')
-    Himage2.paste(bmp, (0,5))
-    Himage2=Himage2.rotate(180) 	
-    disp.ShowImage(disp.getbuffer(Himage2))
+    while True:
+        image = show_clock()
+        #image=image.rotate(180) 
+        disp.ShowImage(disp.getbuffer(image))
+        time.sleep(1)
 
 except IOError as e:
     print(e)
     
 except KeyboardInterrupt:    
-    print("ctrl + c:")
-    epdconfig.module_exit()
+#    config.module_exit()
     exit()
