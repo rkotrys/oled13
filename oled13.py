@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-import SH1106
-import time, sched
-import config
+import time, sched, threading
 from datetime import datetime
 from PIL import Image,ImageDraw,ImageFont
+import SH1106
+import config
 from helper import getip
 from Kbd import Kbd
 
@@ -21,9 +21,13 @@ class oled13:
         self.display_state=''
         self.display_timeout=10
         self.display_timeout_d=10
+        # semafor
+        self.lock = threading.Lock()
         # Initialize library.
         self.disp.Init()
         self.disp.clear()
+        self.withe = 0
+        self.black = 1
         self.image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         self.font = ImageFont.truetype('fonts/cour.ttf', 26)
         self.font10 = ImageFont.truetype('fonts/cour.ttf',12)
@@ -31,6 +35,13 @@ class oled13:
         self.kbd.sethanddle( 'k1', self.k1_handle )
         self.kbd.sethanddle( 'k2', self.k2_handle )
         self.kbd.sethanddle( 'k3', self.k3_handle )
+
+    def drowicon( self,icon=0xEC44,x=1,y=1 ):
+        self.lock.acquire()
+        draw = ImageDraw.Draw(self.image)
+        draw.text( (x,y), chr(icon), font=self.icon, fill=self.withe)     
+        self.disp.ShowImage(self.disp.getbuffer(self.image))
+        self.lock.release()
             
     def clock( self ):
         #print( "oled13.clock():\n")
@@ -44,7 +55,9 @@ class oled13:
         (sx,sy)=self.font10.getsize(self.ip)
         draw.text((int((128-sx)/2),64-sy), self.ip, font = self.font10, fill = 0)
         #image=image.rotate(180) 
+        self.lock.acquire()
         self.image = image
+        self.lock.release()
 
     def status1( self ):
         #print( "oled13.status1():\n  0xE701 ")
@@ -57,7 +70,9 @@ class oled13:
         buf=str(self.display_timeout)
         (sx,sy)=self.font10.getsize(buf)
         draw.text((int((128-sx)/2),64-sy), buf, font = self.font10, fill = 0)
+        self.lock.acquire()
         self.image = image
+        self.lock.release()
 
     def status2( self ):
         #print( "oled13.status2():\n")
@@ -69,7 +84,9 @@ class oled13:
         buf=str(self.display_timeout)
         (sx,sy)=self.font10.getsize(buf)
         draw.text((int((128-sx)/2),64-sy), buf, font = self.font10, fill = 0)
+        self.lock.acquire()
         self.image = image
+        self.lock.release()
 
     def status3( self ):
         #print( "oled13.status3():\n")
@@ -81,11 +98,16 @@ class oled13:
         buf=str(self.display_timeout)
         (sx,sy)=self.font10.getsize(buf)
         draw.text((int((128-sx)/2),64-sy), buf, font = self.font10, fill = 0)
+        self.lock.acquire()
         self.image = image
+        self.lock.release()
         
     def show(self):
         #print( "oled13.show():\n")
+        self.lock.acquire()
         self.disp.ShowImage(self.disp.getbuffer(self.image))    
+        self.lock.release()
+
         
     def run(self):
         #print( "oled13.run():\n")
@@ -122,6 +144,8 @@ class oled13:
         if self.display_state=='':         
             self.clock()
         self.show()
+
+# Keyboard callbacks handlers
         
     def k1_handle(self,name,state):
         if state=='Down':
