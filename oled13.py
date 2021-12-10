@@ -50,7 +50,7 @@ class oled13:
         #print( "oled13.status1():\n  0xE701 ")
         image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         draw = ImageDraw.Draw(image)
-        draw.text( ( 0, 0 ), chr(0xE701), font = self.icon, fill = 0)
+        draw.text( ( 128-12, 0 ), chr(0xE701), font = self.icon, fill = 0)
         buf = 'STATUS 1'
         (sx,sy)=self.font.getsize(buf)
         draw.text( ( int((128-sx)/2), int(31-sy) ), buf, font = self.font, fill = 0)

@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+#  OLED 1.3" display module service
+#
+cd /root/oled13
+/bin/python3 main.py

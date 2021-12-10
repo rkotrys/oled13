@@ -1,0 +1,15 @@
+[Unit]
+Description=OLED 1.3" display module
+After=network.target time-sync.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=root
+ExecStart=/root/oled13/oled13
+ExecStop=/bin/kill -s QUIT $MAINPID
+
+[Install]
+WantedBy=multi-user.target
