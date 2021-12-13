@@ -17,6 +17,7 @@ except IOError as e:
     
 except KeyboardInterrupt:    
 #    config.module_exit()
-    oled.go=False
-    time.sleep(0.1)
+    oled.disp.clear()
+    oled.disp.reset()
+    oled.disp.command(0xAE);  #--turn off oled panel
     exit()

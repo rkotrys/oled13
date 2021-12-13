@@ -93,7 +93,7 @@ class oled13:
         info = self.df['model']
         info = info + u'\nC:' + self.df['chip'] + u' ' + self.df['machine']
         info = info + u'\nFS: ' + u'{}, fr {}'.format( self.df['fs_total'], self.df['fs_free'])
-        info = info + u'\nRAM: {:3.0f}/{:3.0} MB'.format(float(self.df['memavaiable']),float(self.df['memtotal']))
+        info = info + u'\nRAM: {}/{} MB'.format(self.df['memavaiable'],self.df['memtotal'])
         image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         draw = ImageDraw.Draw(image)
         draw.multiline_text( (1,1), info, font=self.font10, spacing=1, fill = 0 )
@@ -198,9 +198,9 @@ class oled13:
             memtotal=str(f.readline()).strip().split()[1]
             memfree=str(f.readline()).strip().split()[1]
             memavaiable=str(f.readline()).strip().split()[1]
-        self.memtotal= ( float(memtotal) / 1000000.0 )    
-        self.memfree= ( float(memfree) / 1000000.0 )    
-        self.memavaiable= ( float(memavaiable) / 1000000.0 )    
+        self.memtotal= ( memtotal // 1000 )    
+        self.memfree= ( memfree // 1000 )    
+        self.memavaiable= ( memavaiable // 1000 )    
         self.release=str(proc.check_output(['uname','-r'] ), encoding='utf-8').strip()
         self.machine=str(proc.check_output(['uname','-m'] ), encoding='utf-8').strip()
         buf=str(proc.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
