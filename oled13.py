@@ -7,7 +7,7 @@ from PIL import Image,ImageDraw,ImageFont
 import subprocess as proc
 import SH1106
 import config
-from helper import getip
+import helper as h
 from Kbd import Kbd
 
 class oled13:
@@ -65,7 +65,7 @@ class oled13:
         buf = now.strftime("%H:%M:%S")
         (sx,sy)=self.font.getsize(buf)
         draw.text( ( int((128-sx)/2), 15 ), buf, font = self.font, fill = 0)
-        self.ip=getip()
+        self.ip=h.getip()
         (sx,sy)=self.font10.getsize(self.ip)
         draw.text((int((128-sx)/2),64-sy), self.ip, font = self.font10, fill = 0)
         draw.text((0,0), '['+self.df['essid']+']', font = self.font10, fill = 0)
@@ -234,6 +234,7 @@ class oled13:
         df['essid']=essid.split(':')[1].replace('"','')
         df['fs_total']=buf[1]
         df['fs_free']=buf[3]
+        df['coretemp']=h.gettemp()
         return df
 
     def getnetdev(self):
