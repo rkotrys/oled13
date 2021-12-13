@@ -90,7 +90,10 @@ class oled13:
         #print( "oled13.status2():\n")
         self.df=self.getdevinfo()
         buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
-        info = u'Chip:\n' + self.df['chip'] + u' ' + self.df['machine'] + '\nFS: ' + u'{}, free {}'.format( buf[1], buf[3]) + u'\nRAM: {:4.2f} GB'.format(float(self.df['memtotal']))
+        info = self.df['model']
+        info = info + u'\nChp: ' + self.df['chip'] + u' ' + self.df['machine']
+        info = info + u'\nFS: ' + u'{}, free {}'.format( self.df['fs_total'], self.df['fs_free'])
+        info = info + u'\nRAM: {:4.2f} GB'.format(float(self.df['memtotal']))
         image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         draw = ImageDraw.Draw(image)
         draw.multiline_text( (1,1), info, font=self.font10, spacing=1, fill = 0 )
@@ -210,7 +213,8 @@ class oled13:
                 break   
         self.hostname=str(proc.check_output(['hostname'] ), encoding='utf-8').strip()
         essid=str(proc.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
-
+        buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
+        
         df['serial']=self.serial
         df['chip']=self.chip
         df['revision']=self.revision
@@ -222,6 +226,8 @@ class oled13:
         df['puuid']=self.puuid
         df['version']=self.version
         df['essid']=essid.split(':')[1].replace('"','')
+        df['fs_total']=buf[1]
+        df['fs_free']=buf[3]
         return df
 
     def getnetdev(self):
