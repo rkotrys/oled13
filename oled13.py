@@ -91,9 +91,9 @@ class oled13:
         self.df=self.getdevinfo()
         buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
         info = self.df['model']
-        info = info + u'\nChp:' + self.df['chip'] + u' ' + self.df['machine']
+        info = info + u'\nC:' + self.df['chip'] + u' ' + self.df['machine']
         info = info + u'\nFS: ' + u'{}, free {}'.format( self.df['fs_total'], self.df['fs_free'])
-        info = info + u'\nRAM: {:4.2f} GB'.format(float(self.df['memtotal']))
+        info = info + u'\nRAM {:4.2f}G, free {:4.2}G'.format(float(self.df['memtotal']),float(self.df['memavaiable']))
         image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         draw = ImageDraw.Draw(image)
         draw.multiline_text( (1,1), info, font=self.font10, spacing=1, fill = 0 )
@@ -195,8 +195,12 @@ class oled13:
             if len(l)>0 and l[0]=='Model':
                 self.model=str(u' '.join(l[2:])).replace('Raspberry Pi','RPi')
         with open('/proc/meminfo','r') as f:
-            output=str(f.readline()).strip().split()
-        self.memtotal= ( float(output[1]) / 1000000.0 )    
+            memtotal=str(f.readline()).strip().split()[1]
+            memfree=str(f.readline()).strip().split()[1]
+            memavaiable=str(f.readline()).strip().split()[1]
+        self.memtotal= ( float(memtotal) / 1000000.0 )    
+        self.memfree= ( float(memfree) / 1000000.0 )    
+        self.memavaiable= ( float(memavaiable) / 1000000.0 )    
         self.release=str(proc.check_output(['uname','-r'] ), encoding='utf-8').strip()
         self.machine=str(proc.check_output(['uname','-m'] ), encoding='utf-8').strip()
         buf=str(proc.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
@@ -220,6 +224,8 @@ class oled13:
         df['revision']=self.revision
         df['model']=self.model
         df['memtotal']=self.memtotal
+        df['memfree']=self.memfree
+        df['memavaiable']=self.memavaiable
         df['release']=self.release
         df['machine']=self.machine
         df['hostname']=self.hostname
