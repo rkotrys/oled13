@@ -17,4 +17,6 @@ except IOError as e:
     
 except KeyboardInterrupt:    
 #    config.module_exit()
+    oled.go=False
+    time.sleep(0.1)
     exit()
