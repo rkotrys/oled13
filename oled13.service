@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 RestartSec=5
 User=root
-ExecStart=/root/oled13/oled13
+ExecStart=/root/config/oled13
 ExecStop=/bin/kill -s QUIT $MAINPID
 
 [Install]
