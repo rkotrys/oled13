@@ -90,7 +90,7 @@ class oled13:
         #print( "oled13.status2():\n")
         self.df=self.getdevinfo()
         buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
-        info = self.df['model'].
+        info = self.df['model']
         info = info + u'\nChp:' + self.df['chip'] + u' ' + self.df['machine']
         info = info + u'\nFS: ' + u'{}, free {}'.format( self.df['fs_total'], self.df['fs_free'])
         info = info + u'\nRAM: {:4.2f} GB'.format(float(self.df['memtotal']))
