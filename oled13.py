@@ -193,7 +193,7 @@ class oled13:
             if len(l)>0 and l[0]=='Revision':
                 self.revision=l[2]
             if len(l)>0 and l[0]=='Model':
-                self.model=str(u' '.join(l[2:])).Replace('Raspberry Pi','RPi')
+                self.model=str(u' '.join(l[2:])).replace('Raspberry Pi','RPi')
         with open('/proc/meminfo','r') as f:
             output=str(f.readline()).strip().split()
         self.memtotal= ( float(output[1]) / 1000000.0 )    
