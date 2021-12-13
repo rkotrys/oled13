@@ -69,7 +69,7 @@ class oled13:
         (sx,sy)=self.font10.getsize(self.ip)
         draw.text((int((128-sx)/2),64-sy), self.ip, font = self.font10, fill = 0)
         
-        draw.text((0,0), u'{:4.1f}\'C'.format(self.df['coretemp']), font = self.font10, fill = 0)
+        draw.text((0,0), u'{:4.1f}\'C'.format(h.gettemp()), font = self.font10, fill = 0)
         #draw.text((0,0), '['+self.df['essid']+']', font = self.font10, fill = 0)
         #image=image.rotate(180) 
         self.lock.acquire()
