@@ -11,3 +11,8 @@ def getip():
             ip = w[1]
             break
     return ip            
+
+def gettemp():
+    with open('/sys/class/thermal/thermal_zone0/temp', "r") as file:
+        tmp = float(file.read(5))/1000
+    return tmp    
