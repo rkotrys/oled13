@@ -92,8 +92,8 @@ class oled13:
         buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
         info = self.df['model']
         info = info + u'\nC:' + self.df['chip'] + u' ' + self.df['machine']
-        info = info + u'\nFS: ' + u'{}, free {}'.format( self.df['fs_total'], self.df['fs_free'])
-        info = info + u'\nRAM {:4.2f}G, free {:4.2}G'.format(float(self.df['memtotal']),float(self.df['memavaiable']))
+        info = info + u'\nFS: ' + u'{}, fr {}'.format( self.df['fs_total'], self.df['fs_free'])
+        info = info + u'\nRAM {:3.1f}G, fr {:3.1}G'.format(float(self.df['memtotal']),float(self.df['memavaiable']))
         image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         draw = ImageDraw.Draw(image)
         draw.multiline_text( (1,1), info, font=self.font10, spacing=1, fill = 0 )
