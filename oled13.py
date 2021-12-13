@@ -90,8 +90,8 @@ class oled13:
         #print( "oled13.status2():\n")
         self.df=self.getdevinfo()
         buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
-        info = self.df['model']
-        info = info + u'\nChp: ' + self.df['chip'] + u' ' + self.df['machine']
+        info = self.df['model'].
+        info = info + u'\nChp:' + self.df['chip'] + u' ' + self.df['machine']
         info = info + u'\nFS: ' + u'{}, free {}'.format( self.df['fs_total'], self.df['fs_free'])
         info = info + u'\nRAM: {:4.2f} GB'.format(float(self.df['memtotal']))
         image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
@@ -193,7 +193,7 @@ class oled13:
             if len(l)>0 and l[0]=='Revision':
                 self.revision=l[2]
             if len(l)>0 and l[0]=='Model':
-                self.model=u' '.join(l[2:])
+                self.model=str(u' '.join(l[2:])).Replace('Raspberry Pi','RPi')
         with open('/proc/meminfo','r') as f:
             output=str(f.readline()).strip().split()
         self.memtotal= ( float(output[1]) / 1000000.0 )    
