@@ -198,9 +198,9 @@ class oled13:
             memtotal=str(f.readline()).strip().split()[1]
             memfree=str(f.readline()).strip().split()[1]
             memavaiable=str(f.readline()).strip().split()[1]
-        self.memtotal= ( memtotal // 1000 )    
-        self.memfree= ( memfree // 1000 )    
-        self.memavaiable= ( memavaiable // 1000 )    
+        self.memtotal= ( int(memtotal) // 1000 )    
+        self.memfree= ( int(memfree) // 1000 )    
+        self.memavaiable= ( int(memavaiable) // 1000 )    
         self.release=str(proc.check_output(['uname','-r'] ), encoding='utf-8').strip()
         self.machine=str(proc.check_output(['uname','-m'] ), encoding='utf-8').strip()
         buf=str(proc.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
