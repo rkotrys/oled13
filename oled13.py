@@ -95,7 +95,7 @@ class oled13:
         info = self.df['model']
         info = info + u'\nC:' + self.df['chip'] + u' ' + self.df['machine']
         info = info + u'\nFS: ' + u'{}, fr {}'.format( self.df['fs_total'], self.df['fs_free'])
-        info = info + u'\nRAM: {}/{} MB'.format(self.df['memavaiable'],self.df['memtotal'])
+        info = info + u'\nRAM free: {}/{} MB'.format(self.df['memavaiable'],self.df['memtotal'])
         image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         draw = ImageDraw.Draw(image)
         draw.multiline_text( (1,1), info, font=self.font10, spacing=1, fill = 0 )
