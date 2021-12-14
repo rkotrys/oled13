@@ -314,8 +314,8 @@ class drowinfo:
         self.start= 0
         (sx,sy)= self.font.getsize('X')
         self.vspace=1
-        self.maxly= 64 // int(sy+self.vspace)
-        self.maxlx= 128 // int(sx)
+        self.maxly= self.oled.disp.height // int(sy+self.vspace)
+        self.maxlx= self.oled.disp.width // int(sx)
         self.maxlines= 50    
 
     def setinfo(self,content):
@@ -344,7 +344,7 @@ class drowinfo:
         """  """
         if content!=None:
             self.setinfo(content)
-        image = Image.new('1', (self.oled.disp.width, self.disp.height), "WHITE")
+        image = Image.new('1', (self.oled.disp.width, self.oled.disp.height), "WHITE")
         draw = ImageDraw.Draw(image)
         info=""
         for i in range( self.maxly ):
