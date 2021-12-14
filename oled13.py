@@ -196,6 +196,9 @@ class oled13:
                 self.revision=l[2]
             if len(l)>0 and l[0]=='Model':
                 self.model=str(u' '.join(l[2:])).replace('Raspberry Pi','RPi')
+        with open('/boot/.id','r') as f:
+            msdid=str(f.readline()).strip()
+        self.msdid=msdid    
         with open('/proc/meminfo','r') as f:
             memtotal=str(f.readline()).strip().split()[1]
             memfree=str(f.readline()).strip().split()[1]
@@ -237,6 +240,7 @@ class oled13:
         df['fs_total']=buf[1]
         df['fs_free']=buf[3]
         df['coretemp']=h.gettemp()
+        df['msdid']=self.msdid
         return df
 
     def getnetdev(self):
