@@ -309,8 +309,8 @@ class drowinfo:
     def __init__(self, oled, font=None ):
         """ clock is reference to 'clock' instance """
         self.oled=oled
-        self.oled.kbd.sethanddle( 'up', self.key_up_handler )
-        self.oled.kbd.sethanddle( 'down', self.key_down_handler )
+        #self.oled.kbd.sethanddle( 'up', self.key_up_handler )
+        #self.oled.kbd.sethanddle( 'down', self.key_down_handler )
         if font!=None:
             self.font=font
         else:
