@@ -50,6 +50,7 @@ class oled13:
         self.kbd.sethanddle( 'k3', self.k3_handle )
         self.kbd.sethanddle( 'enter', self.enter_handle )
         self.kbd.sethanddle( 'right', self.right_handle )
+        
 
     def drowicon( self,icon=0xEC44,x=1,y=1,show=False ):
         self.lock.acquire()
@@ -166,7 +167,9 @@ class oled13:
                 self.online_status()
                 if self.isonline_flag:
                     self.drowicon(icon=0xEC3F,x=128-12,y=0)
+            self.lock.acquire()
             self.show()
+            self.lock.release()
         else:  # self.go==False
             self.disp.clear()
             self.disp.reset()
@@ -306,6 +309,8 @@ class drowinfo:
     def __init__(self, oled, font=None ):
         """ clock is reference to 'clock' instance """
         self.oled=oled
+        self.oled.kbd.sethanddle( 'up', self.key_up_handler )
+        self.oled.kbd.sethanddle( 'down', self.key_down_handler )
         if font!=None:
             self.font=font
         else:
@@ -351,3 +356,27 @@ class drowinfo:
             info=info+self.info[self.start+i]+"\n"
         draw.multiline_text( (1,1), info, font=self.font, spacing=self.vspace, fill = 0 )
         return image
+    
+    def key_up_handler(self,name,state):
+        if state=='Down':
+            if self.start>0:
+                self.start=self.start-1
+        self.oled.display_timeout=self.oled.display_timeout_d
+        image=self.drowinfo()
+        self.oled.lock.acquire()
+        self.oled.image = image
+        self.oled.show()
+        self.oled.lock.release()
+        
+    def key_down_handler(self,name,state):
+        if state=='Down':
+            if self.start < self.info.count-self.maxly:
+                self.start=self.start-1
+        self.oled.display_timeout=self.oled.display_timeout_d
+        image=self.drowinfo()
+        self.oled.lock.acquire()
+        self.oled.image = image
+        self.oled.show()
+        self.oled.lock.release()
+        
+
