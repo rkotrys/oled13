@@ -106,7 +106,7 @@ class oled13:
         self.image = image
         self.lock.release()
 
-    def status3( self ):
+    def status3( self, mode=True ):
         #print( "oled13.status3():\n")
         #image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         #draw = ImageDraw.Draw(image)
@@ -116,10 +116,15 @@ class oled13:
         #buf=str(self.display_timeout)
         #(sx,sy)=self.font10.getsize(buf)
         #draw.text((int((128-sx)/2),64-sy), buf, font = self.font10, fill = 0)
-        image=self.drowinfo3.drowinfo("0 ala\n1 ma\n2 kota\n3 a\n4 kot\n5 ma\n6 tolka\n7 xxx\n8 yyy\n9 123456789012345678901234567890123456789012345678901234567890")
-        self.lock.acquire()
-        self.image = image
-        self.lock.release()
+        if mode:
+            image=self.drowinfo3.drowinfo("0 ala\n1 ma\n2 kota\n3 a\n4 kot\n5 ma\n6 tolka\n7 xxx\n8 yyy\n9 123456789012345678901234567890123456789012345678901234567890")
+            self.drowinfo3.sethanddle()
+            self.lock.acquire()
+            self.image = image
+            self.lock.release()
+        else:
+            self.drowinfo3.clearhanddle()
+                
         
     def show(self):
         #print( "oled13.show():\n")
@@ -153,12 +158,13 @@ class oled13:
                 self.status2()
 
             if self.display_state=='status3':
+                self.status3(True)
                 if self.display_timeout > 0:
                     self.display_timeout=self.display_timeout-1
                 else:
                     self.display_state=''
                     self.display_timeout=self.display_timeout_d
-                self.status3()
+                    self.status3(False)
             
             # clock() is the default    
             if self.display_state=='':         
@@ -309,8 +315,6 @@ class drowinfo:
     def __init__(self, oled, font=None ):
         """ clock is reference to 'clock' instance """
         self.oled=oled
-        self.oled.kbd.sethanddle( 'up', self.key_up_handler )
-        self.oled.kbd.sethanddle( 'down', self.key_down_handler )
         if font!=None:
             self.font=font
         else:
@@ -322,6 +326,15 @@ class drowinfo:
         self.maxly= self.oled.disp.height // int(sy+self.vspace)
         self.maxlx= self.oled.disp.width // int(sx)
         self.maxlines= 50    
+        
+    def sethanddle(self):
+        self.oled.kbd.sethanddle( 'up', self.key_up_handler )
+        self.oled.kbd.sethanddle( 'down', self.key_down_handler )
+
+    def clearhanddle(self):
+        self.oled.kbd.sethanddle( 'up', self.oled.kbd.keyhandle )
+        self.oled.kbd.sethanddle( 'down', self.oled.kbd.keyhandle )
+        
 
     def setinfo(self,content):
         self.info=[]
