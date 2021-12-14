@@ -374,9 +374,9 @@ class drowinfo:
                 self.start=self.start-1
         self.oled.display_timeout=self.oled.display_timeout_d
         image=self.drowinfo()
-        self.oled.lock.acquire()
+        #self.oled.lock.acquire()
         self.oled.image = image
         self.oled.show()
-        self.oled.lock.release()
+        #self.oled.lock.release()
         
 
