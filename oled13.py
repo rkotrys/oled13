@@ -370,7 +370,7 @@ class drowinfo:
         
     def key_down_handler(self,name,state):
         if state=='Down':
-            if self.start < (self.info.count()-self.maxly):
+            if self.start < (list.count(self.info)-self.maxly):
                 self.start=self.start-1
         self.oled.display_timeout=self.oled.display_timeout_d
         image=self.drowinfo()
