@@ -10,6 +10,9 @@ try:
     oled.run()
     while oled.go:
         time.sleep(10)
+    oled.disp.clear()
+    oled.disp.reset()
+    oled.disp.command(0xAE);  #--turn off oled panel
     exit()
     
 except IOError as e:
