@@ -296,6 +296,7 @@ class oled13:
                 self.display_state='status3'
             else:    
                 self.display_state=''
+                self.drowinfo3.clearhanddle()
             self.display_timeout=self.display_timeout_d
         #print( u'k3_handle: {} is {}'.format( name, state ) )
 
