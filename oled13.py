@@ -167,9 +167,9 @@ class oled13:
                 self.online_status()
                 if self.isonline_flag:
                     self.drowicon(icon=0xEC3F,x=128-12,y=0)
-            self.lock.acquire()
+            #self.lock.acquire()
             self.show()
-            self.lock.release()
+            #self.lock.release()
         else:  # self.go==False
             self.disp.clear()
             self.disp.reset()
