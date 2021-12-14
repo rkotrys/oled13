@@ -298,3 +298,53 @@ class oled13:
             self.drowicon()
             print( u'rght_handle: {} is {}'.format( name, state ) )    
         
+
+class drowinfo:
+    def __init__(self, oled, font=None ):
+        """ clock is reference to 'clock' instance """
+        self.oled=oled
+        if font!=None:
+            self.font=font
+        else:
+            self.font=ImageFont.truetype('fonts/cour.ttf',11)
+        self.info= []
+        self.start= 0
+        (sx,sy)= self.font.getsize('X')
+        self.vspace=1
+        self.maxly= 64 // int(sy+self.vspace)
+        self.maxlx= 128 // int(sx)
+        self.maxlines= 50    
+
+    def setinfo(self,content):
+        self.info=[]
+        if isinstance(content, list):
+            for line in content:
+                line=str(line)
+                while len(line)>0:
+                    if len(line)<=self.maxlx:
+                        self.info.append(line)
+                        break
+                    else:
+                        self.info.append(line[0:self.maxlx])
+                        line=line[self.maxlx:]
+        else:
+            for line in content.splitlines():
+                while len(line)>0:
+                    if len(line)<=self.maxlx:
+                        self.info.append(line)
+                        break
+                    else:
+                        self.info.append(line[0:self.maxlx])
+                        line=line[self.maxlx:]        
+        
+    def drowinfo(self,content=None):
+        """  """
+        if content!=None:
+            self.setinfo(content)
+        image = Image.new('1', (self.oled.disp.width, self.disp.height), "WHITE")
+        draw = ImageDraw.Draw(image)
+        info=""
+        for i in range( self.maxly ):
+            info=info+self.info[self.start+i]+"\n"
+        draw.multiline_text( (1,1), info, font=self.font, spacing=self.vspace, fill = 0 )
+        return image
