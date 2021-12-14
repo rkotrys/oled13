@@ -42,6 +42,8 @@ class oled13:
         self.font = ImageFont.truetype('fonts/cour.ttf', 26)
         self.font10 = ImageFont.truetype('fonts/cour.ttf',11)
         self.icon = ImageFont.truetype('fonts/segmdl2.ttf', 12)
+        # drowinfo objects
+        self.drowinfo3=drowinfo(self,self.font10)
         # Set keyboard handler callback
         self.kbd.sethanddle( 'k1', self.k1_handle )
         self.kbd.sethanddle( 'k2', self.k2_handle )
@@ -105,14 +107,15 @@ class oled13:
 
     def status3( self ):
         #print( "oled13.status3():\n")
-        image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
-        draw = ImageDraw.Draw(image)
-        buf = 'STATUS 3'
-        (sx,sy)=self.font.getsize(buf)
-        draw.text( ( int((128-sx)/2), int(31-sy) ), buf, font = self.font, fill = 0)
-        buf=str(self.display_timeout)
-        (sx,sy)=self.font10.getsize(buf)
-        draw.text((int((128-sx)/2),64-sy), buf, font = self.font10, fill = 0)
+        #image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
+        #draw = ImageDraw.Draw(image)
+        #buf = 'STATUS 3'
+        #(sx,sy)=self.font.getsize(buf)
+        #draw.text( ( int((128-sx)/2), int(31-sy) ), buf, font = self.font, fill = 0)
+        #buf=str(self.display_timeout)
+        #(sx,sy)=self.font10.getsize(buf)
+        #draw.text((int((128-sx)/2),64-sy), buf, font = self.font10, fill = 0)
+        image=self.drowinfo3.drowinfo("0 ala\n1 ma\n2 kota\n3 a\n4 kot\n5 ma\n6 tolka\7 xxx\n8 yyy\9 123456789012345678901234567890")
         self.lock.acquire()
         self.image = image
         self.lock.release()
