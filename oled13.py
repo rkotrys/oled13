@@ -376,7 +376,7 @@ class drowinfo:
         image=self.drowinfo()
         #self.oled.lock.acquire()
         self.oled.image = image
-        self.oled.show()
+        #self.oled.show()
         #self.oled.lock.release()
         
 
