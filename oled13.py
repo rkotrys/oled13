@@ -116,7 +116,7 @@ class oled13:
         #buf=str(self.display_timeout)
         #(sx,sy)=self.font10.getsize(buf)
         #draw.text((int((128-sx)/2),64-sy), buf, font = self.font10, fill = 0)
-        image=self.drowinfo3.drowinfo("0 ala\n1 ma\n2 kota\n3 a\n4 kot\n5 ma\n6 tolka\7 xxx\n8 yyy\9 123456789012345678901234567890")
+        image=self.drowinfo3.drowinfo("0 ala\n1 ma\n2 kota\n3 a\n4 kot\n5 ma\n6 tolka\n7 xxx\n8 yyy\n9 123456789012345678901234567890123456789012345678901234567890")
         self.lock.acquire()
         self.image = image
         self.lock.release()
@@ -365,7 +365,7 @@ class drowinfo:
         image=self.drowinfo()
         #self.oled.lock.acquire()
         self.oled.image = image
-        #self.oled.show()
+        self.oled.show()
         #self.oled.lock.release()
         
     def key_down_handler(self,name,state):
@@ -376,7 +376,7 @@ class drowinfo:
         image=self.drowinfo()
         #self.oled.lock.acquire()
         self.oled.image = image
-        #self.oled.show()
+        self.oled.show()
         #self.oled.lock.release()
         
 
