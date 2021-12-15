@@ -249,6 +249,8 @@ class oled13:
                 self.display_state='status1'
             else:    
                 self.display_state=''
+                self.oled.kbd.sethanddle( 'up', self.oled.kbd.keyhandle )
+                self.oled.kbd.sethanddle( 'down', self.oled.kbd.keyhandle )
             self.display_timeout=self.display_timeout_d
         #print( u'k1_handle: {} is {}'.format( name, state ) )
 
@@ -258,6 +260,8 @@ class oled13:
                 self.display_state='status2'
             else:    
                 self.display_state=''
+                self.oled.kbd.sethanddle( 'up', self.oled.kbd.keyhandle )
+                self.oled.kbd.sethanddle( 'down', self.oled.kbd.keyhandle )
             self.display_timeout=self.display_timeout_d
         #print( u'k2_handle: {} is {}'.format( name, state ) )
         
@@ -267,7 +271,8 @@ class oled13:
                 self.display_state='status3'
             else:    
                 self.display_state=''
-                self.drowinfo3.clearhanddle()
+                self.oled.kbd.sethanddle( 'up', self.oled.kbd.keyhandle )
+                self.oled.kbd.sethanddle( 'down', self.oled.kbd.keyhandle )
             self.display_timeout=self.display_timeout_d
         #print( u'k3_handle: {} is {}'.format( name, state ) )
 
