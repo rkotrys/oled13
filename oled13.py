@@ -348,7 +348,7 @@ class drowinfo:
             if self.start>0:
                 self.start=self.start-1
         self.oled.display_timeout=self.oled.display_timeout_d
-        image=self.drowinfo()
+        image=self.drow()
         self.oled.lock.acquire()
         self.oled.image = image
         self.oled.lock.release()
@@ -360,7 +360,7 @@ class drowinfo:
             if self.start < (len(self.info)-self.maxly):
                 self.start=self.start+1
         self.oled.display_timeout=self.oled.display_timeout_d
-        image=self.drowinfo()
+        image=self.drow()
         self.oled.lock.acquire()
         self.oled.image = image
         self.oled.lock.release()
