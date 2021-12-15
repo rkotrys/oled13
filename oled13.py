@@ -84,7 +84,7 @@ class oled13:
             mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
         """
         if mode:
-            image=drowinfo.drowinfo(h.getrpiinfo(False))
+            image=drowinfo.drow(h.getrpiinfo(False))
             drowinfo.sethanddle()
             self.lock.acquire()
             self.image = image
@@ -99,7 +99,7 @@ class oled13:
             mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
         """
         if mode:
-            image=drowinfo.drowinfo(" status 2 ")
+            image=drowinfo.drow(" status 2 ")
             drowinfo.sethanddle()
             self.lock.acquire()
             self.image = image
@@ -114,7 +114,7 @@ class oled13:
             mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
         """
         if mode:
-            image=drowinfo.drowinfo(" status 3 ")
+            image=drowinfo.drow(" status 3 ")
             drowinfo.sethanddle()
             self.lock.acquire()
             self.image = image
@@ -330,7 +330,7 @@ class drowinfo:
                         self.info.append(line[0:self.maxlx])
                         line=line[self.maxlx:]        
         
-    def drowinfo(self,content=None):
+    def drow(self,content=None):
         """ drowinfo class - display multilnies 'content' in OLED screen """
         if content!=None:
             self.setinfo(content)
