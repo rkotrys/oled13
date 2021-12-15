@@ -116,5 +116,5 @@ def getrpiinfo(dictionary=True):
     else:
         buf=""
         for key, value in df.items():
-            buf = buf + u'{}:\n'.format(key) + u'{}:\n'.format(value)
+            buf = buf + u"{}:\n".format(key) + u"{}:\n".format(value)
         return buf
