@@ -107,7 +107,7 @@ def getrpiinfo(dictionary=True):
     df['hostname']=str(subprocess.check_output(['hostname'] ), encoding='utf-8').strip()
     essid=str(subprocess.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
     df['essid']=essid.split(':')[1].replace('"','')
-    buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
+    buf=str(subprocess.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
     df['fs_total']=buf[1]
     df['fs_free']=buf[3]
     df['coretemp']=gettemp()
