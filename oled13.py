@@ -308,7 +308,6 @@ class drowinfo:
         self.maxlines= 50    
         
     def sethanddle(self):
-        print("In sethanddle(self):")
         self.oled.kbd.sethanddle( 'up', self.key_up_handler )
         self.oled.kbd.sethanddle( 'down', self.key_down_handler )
 
