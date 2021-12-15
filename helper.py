@@ -43,8 +43,8 @@ def hostname(name=None):
 def online_status(address="8.8.8.8"):
     """ check on-line status od 'address' host with ping command """
     try:
-        r = str(proc.check_output(['/bin/ping', '-4', '-c', '3', '-i', '0', '-f', '-q', address] ), encoding='utf-8').strip()
-    except proc.CalledProcessError:
+        r = str(subprocess.check_output(['/bin/ping', '-4', '-c', '3', '-i', '0', '-f', '-q', address] ), encoding='utf-8').strip()
+    except subprocess.CalledProcessError:
         r = '0 received'
     ind = int(r.find(' received'))
     if( int(r[ind-1:ind]) > 0 ):
