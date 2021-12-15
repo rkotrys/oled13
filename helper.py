@@ -119,14 +119,15 @@ def getrpiinfo(dictionary=True):
         buf=""
         buf = buf + u"{}\n".format(df['model'])
         buf = buf + u"host: {}\n".format(df['hostname'])
+        buf = buf + u"msdid: {}\n".format(df['msdid'])
         buf = buf + u"ser: {}\n".format(df['serial'])
         buf = buf + u"puuid: {}\n".format(df['puuid'])
-        buf = buf + u"c:{} {}\n".format(df['chip'],df['machine'])
-        buf = buf + u"Linux:{}\n".format(df['release'])
+        buf = buf + u"c: {} {}\n".format(df['chip'],df['machine'])
+        buf = buf + u"Linux: {}\n".format(df['release'])
         buf = buf + u"ver: {}\n".format(df['version'])
         buf = buf + u"ESSID: {}\n".format(df['essid'])
         for key, value in df.items():
-            if key in ['model', 'serial', 'hostname', 'chip', 'machine', 'puuid','release', 'version','essid']:
+            if key in ['model', 'serial', 'hostname', 'chip', 'machine', 'puuid','release', 'version','essid','revision','msdid']:
                 continue
             buf = buf + u"{}:\n".format(key) + u"  {}\n".format(value)
         return buf
