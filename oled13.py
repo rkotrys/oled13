@@ -31,7 +31,7 @@ class oled13:
         self.isonline_flag = False
         # dev info
         self.df=self.getdevinfo()
-        self.netdev=self.getnetdev()
+        self.netdev=h.getnetdev()
         # Initialize library.
         self.disp.Init()
         self.disp.clear()
@@ -71,9 +71,7 @@ class oled13:
         self.ip=h.getip()
         (sx,sy)=self.font10.getsize(self.ip)
         draw.text((int((128-sx)/2),64-sy), self.ip, font = self.font10, fill = 0)
-        
         draw.text((0,0), u'{:2.0f}\'C'.format(h.gettemp()), font = self.font10, fill = 0)
-        #draw.text((0,0), '['+self.df['essid']+']', font = self.font10, fill = 0)
         #image=image.rotate(180) 
         self.lock.acquire()
         self.image = image
@@ -82,7 +80,6 @@ class oled13:
     def status1( self ):
         #print( "oled13.status1():\n  0xE701 ")
         self.df=self.getdevinfo()
-        buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
         info = u'HOST: ' + self.df['hostname'] + u"\nSN: " + self.df['serial'] + u"\nPUUID: " + self.df['puuid'] + u"\nCore: " + self.df['release'] + u'\nVer: ' + self.df['version']
         image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         draw = ImageDraw.Draw(image)
@@ -106,19 +103,15 @@ class oled13:
         self.image = image
         self.lock.release()
 
-    def status3( self, mode=True ):
-        #print( "oled13.status3():\n")
-        #image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
-        #draw = ImageDraw.Draw(image)
-        #buf = 'STATUS 3'
-        #(sx,sy)=self.font.getsize(buf)
-        #draw.text( ( int((128-sx)/2), int(31-sy) ), buf, font = self.font, fill = 0)
-        #buf=str(self.display_timeout)
-        #(sx,sy)=self.font10.getsize(buf)
-        #draw.text((int((128-sx)/2),64-sy), buf, font = self.font10, fill = 0)
+    def status3( self, mode=True, drowinfo=None ):
+        """ 
+            status3( self, drowinfo=None, mode=True )
+            drowinfo = instance of 'drowinfo' class
+            mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
+        """
         if mode:
-            image=self.drowinfo3.drowinfo("0 ala\n1 ma\n2 kota\n3 a\n4 kot\n5 ma\n6 tolka\n7 xxx\n8 yyy\n9 123456789012345678901234567890123456789012345678901234567890")
-            self.drowinfo3.sethanddle()
+            image=drowinfo.drowinfo("0 ala\n1 ma\n2 kota\n3 a\n4 kot\n5 ma\n6 tolka\n7 xxx\n8 yyy\n9 123456789012345678901234567890123456789012345678901234567890")
+            drowinfo.sethanddle()
             self.lock.acquire()
             self.image = image
             self.lock.release()
@@ -180,18 +173,6 @@ class oled13:
             self.disp.clear()
             self.disp.reset()
             self.disp.command(0xAE);  #--turn off oled panel
-
-    # online status
-    def online_status(self):
-        try:
-            r = str(proc.check_output(['/bin/ping', '-4', '-c', '3', '-i', '0', '-f', '-q', self.rpilink_address] ), encoding='utf-8').strip()
-        except proc.CalledProcessError:
-            r = '0 received'
-        ind = int(r.find(' received'))
-        if( int(r[ind-1:ind]) > 0 ):
-            self.isonline_flag = True
-        else:
-            self.isonline_flag = False        
         
 # system status and info
     def getdevinfo(self):
@@ -254,21 +235,6 @@ class oled13:
         df['coretemp']=h.gettemp()
         df['msdid']=self.msdid
         return df
-
-    def getnetdev(self):
-        netdev={}
-        with open('/proc/net/dev','r') as f:
-            dev = f.read()
-            for devname in ['eth0', 'eth1', 'wlan0', 'wlan1']:
-                if dev.find(devname) > -1:
-                    buf = str(proc.check_output([ 'ip', '-4', 'address', 'show', 'dev', devname ]), encoding='utf-8')
-                    if len(buf)>1: 
-                        ip=buf.strip().splitlines()[1].split()[1]
-                    else:
-                        ip='--'
-                    mac=str(proc.check_output([ 'ip', 'link', 'show', 'dev', devname ]), encoding='utf-8').strip().splitlines()[1].split()[1]
-                    netdev[devname]=(devname,ip,mac)
-        return netdev            
 
 # Keyboard callbacks handlers
         
@@ -360,7 +326,7 @@ class drowinfo:
                         line=line[self.maxlx:]        
         
     def drowinfo(self,content=None):
-        """  """
+        """ drowinfo class - display multilnies 'content' in OLED screen """
         if content!=None:
             self.setinfo(content)
         image = Image.new('1', (self.oled.disp.width, self.oled.disp.height), "WHITE")
