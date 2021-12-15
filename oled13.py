@@ -90,7 +90,7 @@ class oled13:
             self.image = image
             self.lock.release()
         else:
-            self.drowinfo3.clearhanddle()
+            drowinfo.clearhanddle()
 
     def status2( self, mode=True, drowinfo=None ):
         """ 
@@ -139,13 +139,13 @@ class oled13:
             #print( "oled13.loop():\n")
             self.s.enter(1, 1, self.loop ) 
             if self.display_state=='status1':
-                self.status1(True,self.drowinfo)
+                self.status1(mode=True,drowinfo=self.drowinfo)
                 if self.display_timeout > 0:
                     self.display_timeout=self.display_timeout-1
                 else:
                     self.display_state=''
                     self.display_timeout=self.display_timeout_d
-                self.status1(mode=False)
+                self.status1(mode=False,drowinfo=self.drowinfo)
 
             if self.display_state=='status2':
                 self.status2(mode=True,drowinfo=self.drowinfo)
@@ -154,7 +154,7 @@ class oled13:
                 else:
                     self.display_state=''
                     self.display_timeout=self.display_timeout_d
-                self.status2(mode=False)
+                self.status2(mode=False,drowinfo=self.drowinfo)
 
             if self.display_state=='status3':
                 self.status3(mode=True,drowinfo=self.drowinfo)
@@ -163,7 +163,7 @@ class oled13:
                 else:
                     self.display_state=''
                     self.display_timeout=self.display_timeout_d
-                    self.status3(mode=False)
+                    self.status3(mode=False,drowinfo=self.drowinfo)
             
             # clock() is the default    
             if self.display_state=='':         
