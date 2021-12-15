@@ -329,7 +329,6 @@ class drowinfo:
                     else:
                         self.info.append(line[0:self.maxlx])
                         line=line[self.maxlx:]    
-        print(self.info)                    
         
     def drow(self,content=None):
         """ drowinfo class - display multilnies 'content' in OLED screen """
