@@ -17,4 +17,24 @@ def gettemp():
     """ get the core temperature and return as float in 'C """
     with open('/sys/class/thermal/thermal_zone0/temp', "r") as file:
         tmp = float(file.read(5))/1000
-    return tmp    
+    return tmp
+
+def hostname(name=None):
+    oldhostname=str( subprocess.run(["/bin/hostname"], capture_output=True, text=True ).stdout ).strip()
+    if name!=None:
+        # set host name to name
+        subprocess.run(["/bin/hostname", name])
+        with open("/etc/hostname","w") as f:
+            f.write(name)
+        with open("/etc/hosts","r") as f:
+            oldhosts=str(f.read()).splitlines()
+        with open("/etc/hosts","w") as f:
+            for line in oldhosts:
+                if oldhostname in line:
+                    f.write(line.replace(oldhostname, name)+'\n')
+                else:     
+                    f.write(line+'\n')
+    else:
+        # get hostname
+        hostname=str( subprocess.run(["/bin/hostname"], capture_output=True, text=True ).stdout ).strip()
+        return hostname
