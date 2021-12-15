@@ -126,7 +126,7 @@ def getrpiinfo(dictionary=True):
         buf = buf + u"Linux: {}\n".format(df['release'])
         buf = buf + u"ver: {}\n".format(df['version'])
         buf = buf + u"ESSID: {}\n".format(df['essid'])
-        buf = buf + u"CPU temp: {:2.0}\n".format(float(df['coretemp']))
+        buf = buf + u"CPU temp: {:2.0f}\n".format(float(df['coretemp']))
         for key, value in df.items():
             if key in ['model', 'serial', 'hostname', 'chip', 'machine', 'puuid','release', 'version','essid','revision','msdid','coretemp']:
                 continue
