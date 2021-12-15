@@ -30,7 +30,7 @@ class oled13:
         self.rpilink_address = rpilink_address
         self.isonline_flag = False
         # dev info
-        self.df=self.getdevinfo()
+        self.df=h.getdevinfo()
         self.netdev=h.getnetdev()
         # Initialize library.
         self.disp.Init()
@@ -43,7 +43,7 @@ class oled13:
         self.font10 = ImageFont.truetype('fonts/cour.ttf',11)
         self.icon = ImageFont.truetype('fonts/segmdl2.ttf', 12)
         # drowinfo objects
-        self.drowinfo3=drowinfo(self,self.font10)
+        self.drowinfo=drowinfo(self,self.font10)
         # Set keyboard handler callback
         self.kbd.sethanddle( 'k1', self.k1_handle )
         self.kbd.sethanddle( 'k2', self.k2_handle )
@@ -77,31 +77,35 @@ class oled13:
         self.image = image
         self.lock.release()
 
-    def status1( self ):
-        #print( "oled13.status1():\n  0xE701 ")
-        self.df=self.getdevinfo()
-        info = u'HOST: ' + self.df['hostname'] + u"\nSN: " + self.df['serial'] + u"\nPUUID: " + self.df['puuid'] + u"\nCore: " + self.df['release'] + u'\nVer: ' + self.df['version']
-        image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
-        draw = ImageDraw.Draw(image)
-        draw.multiline_text( (1,1), info, font=self.font10, spacing=1, fill = 0 )
-        self.lock.acquire()
-        self.image = image
-        self.lock.release()
+    def status1( self, mode=True, drowinfo=None ):
+        """ 
+            status1( self, drowinfo=None, mode=True )
+            drowinfo = instance of 'drowinfo' class
+            mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
+        """
+        if mode:
+            image=drowinfo.drowinfo(h.getdevinfo(False))
+            drowinfo.sethanddle()
+            self.lock.acquire()
+            self.image = image
+            self.lock.release()
+        else:
+            self.drowinfo3.clearhanddle()
 
-    def status2( self ):
-        #print( "oled13.status2():\n")
-        self.df=self.getdevinfo()
-        buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
-        info = self.df['model']
-        info = info + u'\nC:' + self.df['chip'] + u' ' + self.df['machine']
-        info = info + u'\nFS: ' + u'{}, fr {}'.format( self.df['fs_total'], self.df['fs_free'])
-        info = info + u'\nRAM fr: {}/{}MB'.format(self.df['memavaiable'],self.df['memtotal'])
-        image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
-        draw = ImageDraw.Draw(image)
-        draw.multiline_text( (1,1), info, font=self.font10, spacing=1, fill = 0 )
-        self.lock.acquire()
-        self.image = image
-        self.lock.release()
+    def status2( self, mode=True, drowinfo=None ):
+        """ 
+            status2( self, drowinfo=None, mode=True )
+            drowinfo = instance of 'drowinfo' class
+            mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
+        """
+        if mode:
+            image=drowinfo.drowinfo(" status 2 ")
+            drowinfo.sethanddle()
+            self.lock.acquire()
+            self.image = image
+            self.lock.release()
+        else:
+            drowinfo.clearhanddle()
 
     def status3( self, mode=True, drowinfo=None ):
         """ 
@@ -110,13 +114,13 @@ class oled13:
             mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
         """
         if mode:
-            image=drowinfo.drowinfo("0 ala\n1 ma\n2 kota\n3 a\n4 kot\n5 ma\n6 tolka\n7 xxx\n8 yyy\n9 123456789012345678901234567890123456789012345678901234567890")
+            image=drowinfo.drowinfo(" status 3 ")
             drowinfo.sethanddle()
             self.lock.acquire()
             self.image = image
             self.lock.release()
         else:
-            self.drowinfo3.clearhanddle()
+            drowinfo.clearhanddle()
                 
         
     def show(self):
@@ -135,29 +139,31 @@ class oled13:
             #print( "oled13.loop():\n")
             self.s.enter(1, 1, self.loop ) 
             if self.display_state=='status1':
+                self.status1(True,self.drowinfo)
                 if self.display_timeout > 0:
                     self.display_timeout=self.display_timeout-1
                 else:
                     self.display_state=''
                     self.display_timeout=self.display_timeout_d
-                self.status1()
+                self.status1(mode=False)
 
             if self.display_state=='status2':
+                self.status2(mode=True,drowinfo=self.drowinfo)
                 if self.display_timeout > 0:
                     self.display_timeout=self.display_timeout-1
                 else:
                     self.display_state=''
                     self.display_timeout=self.display_timeout_d
-                self.status2()
+                self.status2(mode=False)
 
             if self.display_state=='status3':
-                self.status3(True)
+                self.status3(mode=True,drowinfo=self.drowinfo)
                 if self.display_timeout > 0:
                     self.display_timeout=self.display_timeout-1
                 else:
                     self.display_state=''
                     self.display_timeout=self.display_timeout_d
-                    self.status3(False)
+                    self.status3(mode=False)
             
             # clock() is the default    
             if self.display_state=='':         
