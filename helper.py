@@ -71,8 +71,10 @@ def getnetdev():
 def getrpiinfo(dictionary=True):
     """ getrpiinfo(out=True) collect RPi params and status information, return as dictionary """
     df = {}
-    df['machine']=str(subprocess.check_output(['uname','-m'] ), encoding='utf-8').strip()
     df['hostname']=str(subprocess.check_output(['hostname'] ), encoding='utf-8').strip()
+    with open('/boot/.id','r') as f:
+        msdid=str(f.readline()).strip()
+    df['msdid']=msdid    
     with open('/proc/cpuinfo','r') as f:
         output=str(f.read()).strip().splitlines()
     for line in output:
@@ -85,17 +87,7 @@ def getrpiinfo(dictionary=True):
             df['revision']=l[2]
         if len(l)>0 and l[0]=='Model':
             df['model']=str(u' '.join(l[2:])).replace('Raspberry Pi','RPi')
-    with open('/boot/.id','r') as f:
-        msdid=str(f.readline()).strip()
-    df['msdid']=msdid    
-    with open('/proc/meminfo','r') as f:
-        df['memtotal']=int(str(f.readline()).strip().split()[1])//1000
-        df['memfree']=int(str(f.readline()).strip().split()[1])//1000
-        df['memavaiable']=int(str(f.readline()).strip().split()[1])//1000
     df['release']=str(subprocess.check_output(['uname','-r'] ), encoding='utf-8').strip()
-    
-    buf=str(subprocess.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
-    df['puuid']=buf[8:16]
     df['version']='???'
     with open('/etc/os-release','r') as f:
         output=f.readlines()
@@ -106,12 +98,21 @@ def getrpiinfo(dictionary=True):
         else:
             df['version']=str(l[1]).strip().replace('"','').replace("\n",'') 
             break   
-    essid=str(subprocess.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
-    df['essid']=essid.split(':')[1].replace('"','')
+    df['machine']=str(subprocess.check_output(['uname','-m'] ), encoding='utf-8').strip()
+    with open('/proc/meminfo','r') as f:
+        df['memtotal']=int(str(f.readline()).strip().split()[1])//1000
+        df['memfree']=int(str(f.readline()).strip().split()[1])//1000
+        df['memavaiable']=int(str(f.readline()).strip().split()[1])//1000
+    buf=str(subprocess.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
+    df['puuid']=buf[8:16]
     buf=str(subprocess.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
     df['fs_total']=buf[1]
     df['fs_free']=buf[3]
+
+    essid=str(subprocess.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
+    df['essid']=essid.split(':')[1].replace('"','')
     df['coretemp']=gettemp()
+
     if dictionary:
         return df
     else:
