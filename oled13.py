@@ -86,7 +86,9 @@ class oled13:
         if mode:
             image=drowinfo.drow(h.getrpiinfo(False))
             print("sethanddle()")
-            drowinfo.sethanddle()
+            self.kbd.sethanddle( 'up', drowinfo.key_up_handler )
+            self.kbd.sethanddle( 'down', drowinfo.key_down_handler )
+            #drowinfo.sethanddle()
             self.lock.acquire()
             self.image = image
             self.lock.release()
