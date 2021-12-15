@@ -130,5 +130,5 @@ def getrpiinfo(dictionary=True):
         for key, value in df.items():
             if key in ['model', 'serial', 'hostname', 'chip', 'machine', 'puuid','release', 'version','essid','revision','msdid','coretemp']:
                 continue
-            buf = buf + u"{}: ".format(key) + u"  {}\n".format(value)
+            buf = buf + u"{}: {}\n".format(key,value)
         return buf
