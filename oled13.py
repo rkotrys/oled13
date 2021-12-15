@@ -169,8 +169,7 @@ class oled13:
             if self.display_state=='':         
                 self.clock()
                 # add online status info
-                self.online_status()
-                if self.isonline_flag:
+                if h.online_status():
                     self.drowicon(icon=0xEC3F,x=128-12,y=0)
             #self.lock.acquire()
             self.show()
