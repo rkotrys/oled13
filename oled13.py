@@ -85,6 +85,7 @@ class oled13:
         """
         if mode:
             image=drowinfo.drow(h.getrpiinfo(False))
+            print("sethanddle()")
             drowinfo.sethanddle()
             self.lock.acquire()
             self.image = image
@@ -305,6 +306,7 @@ class drowinfo:
         self.maxlines= 50    
         
     def sethanddle(self):
+        print("In sethanddle(self):")
         self.oled.kbd.sethanddle( 'up', self.key_up_handler )
         self.oled.kbd.sethanddle( 'down', self.key_down_handler )
 
