@@ -59,12 +59,12 @@ def getnetdev():
         dev = f.read()
         for devname in ['eth0', 'eth1', 'wlan0', 'wlan1']:
             if dev.find(devname) > -1:
-                buf = str(proc.check_output([ 'ip', '-4', 'address', 'show', 'dev', devname ]), encoding='utf-8')
+                buf = str(subprocess.check_output([ 'ip', '-4', 'address', 'show', 'dev', devname ]), encoding='utf-8')
                 if len(buf)>1: 
                     ip=buf.strip().splitlines()[1].split()[1]
                 else:
                     ip='--'
-                mac=str(proc.check_output([ 'ip', 'link', 'show', 'dev', devname ]), encoding='utf-8').strip().splitlines()[1].split()[1]
+                mac=str(subprocess.check_output([ 'ip', 'link', 'show', 'dev', devname ]), encoding='utf-8').strip().splitlines()[1].split()[1]
                 netdev[devname]=(devname,ip,mac)
     return netdev            
     
@@ -90,9 +90,9 @@ def getrpiinfo(dictionary=True):
         df['memtotal']=int(str(f.readline()).strip().split()[1])//1000
         df['memfree']=int(str(f.readline()).strip().split()[1])//1000
         df['memavaiable']=int(str(f.readline()).strip().split()[1])//1000
-    df['release']=str(proc.check_output(['uname','-r'] ), encoding='utf-8').strip()
-    df['machine']=str(proc.check_output(['uname','-m'] ), encoding='utf-8').strip()
-    buf=str(proc.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
+    df['release']=str(subprocess.check_output(['uname','-r'] ), encoding='utf-8').strip()
+    df['machine']=str(subprocess.check_output(['uname','-m'] ), encoding='utf-8').strip()
+    buf=str(subprocess.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
     df['puuid']=buf[8:16]
     df['version']='???'
     with open('/etc/os-release','r') as f:
@@ -104,8 +104,8 @@ def getrpiinfo(dictionary=True):
         else:
             df['version']=str(l[1]).strip().replace('"','').replace("\n",'') 
             break   
-    df['hostname']=str(proc.check_output(['hostname'] ), encoding='utf-8').strip()
-    essid=str(proc.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
+    df['hostname']=str(subprocess.check_output(['hostname'] ), encoding='utf-8').strip()
+    essid=str(subprocess.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
     df['essid']=essid.split(':')[1].replace('"','')
     buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
     df['fs_total']=buf[1]
