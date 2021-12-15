@@ -30,7 +30,7 @@ class oled13:
         self.rpilink_address = rpilink_address
         self.isonline_flag = False
         # dev info
-        self.df=h.getdevinfo()
+        self.df=h.getrpiinfo()
         self.netdev=h.getnetdev()
         # Initialize library.
         self.disp.Init()
@@ -84,7 +84,7 @@ class oled13:
             mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
         """
         if mode:
-            image=drowinfo.drowinfo(h.getdevinfo(False))
+            image=drowinfo.drowinfo(h.getrpiinfo(False))
             drowinfo.sethanddle()
             self.lock.acquire()
             self.image = image
