@@ -313,8 +313,9 @@ class drowinfo:
         self.oled.kbd.sethanddle( 'down', self.key_down_handler )
 
     def clearhanddle(self):
-        self.oled.kbd.sethanddle( 'up', self.oled.kbd.keyhandle )
-        self.oled.kbd.sethanddle( 'down', self.oled.kbd.keyhandle )
+        #self.oled.kbd.sethanddle( 'up', self.oled.kbd.keyhandle )
+        #self.oled.kbd.sethanddle( 'down', self.oled.kbd.keyhandle )
+        pass
         
 
     def setinfo(self,content):
