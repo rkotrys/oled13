@@ -339,7 +339,7 @@ class drowinfo:
         draw = ImageDraw.Draw(image)
         info=""
         for i in range( self.maxly ):
-            if (self.start+i) <= len(self.info):
+            if (self.start+i) < len(self.info):
                 info=info+self.info[self.start+i]+"\n"
         draw.multiline_text( (1,1), info, font=self.font, spacing=self.vspace, fill = 0 )
         return image
