@@ -71,6 +71,8 @@ def getnetdev():
 def getrpiinfo(dictionary=True):
     """ getrpiinfo(out=True) collect RPi params and status information, return as dictionary """
     df = {}
+    df['machine']=str(subprocess.check_output(['uname','-m'] ), encoding='utf-8').strip()
+    df['hostname']=str(subprocess.check_output(['hostname'] ), encoding='utf-8').strip()
     with open('/proc/cpuinfo','r') as f:
         output=str(f.read()).strip().splitlines()
     for line in output:
@@ -91,7 +93,7 @@ def getrpiinfo(dictionary=True):
         df['memfree']=int(str(f.readline()).strip().split()[1])//1000
         df['memavaiable']=int(str(f.readline()).strip().split()[1])//1000
     df['release']=str(subprocess.check_output(['uname','-r'] ), encoding='utf-8').strip()
-    df['machine']=str(subprocess.check_output(['uname','-m'] ), encoding='utf-8').strip()
+    
     buf=str(subprocess.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
     df['puuid']=buf[8:16]
     df['version']='???'
@@ -104,7 +106,6 @@ def getrpiinfo(dictionary=True):
         else:
             df['version']=str(l[1]).strip().replace('"','').replace("\n",'') 
             break   
-    df['hostname']=str(subprocess.check_output(['hostname'] ), encoding='utf-8').strip()
     essid=str(subprocess.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
     df['essid']=essid.split(':')[1].replace('"','')
     buf=str(subprocess.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
@@ -116,5 +117,5 @@ def getrpiinfo(dictionary=True):
     else:
         buf=""
         for key, value in df.items():
-            buf = buf + u"{}:\n".format(key) + u"{}:\n".format(value)
+            buf = buf + u"{}:\n".format(key) + u"  {}\n".format(value)
         return buf
