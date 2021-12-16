@@ -11,7 +11,19 @@ def getip():
         if( len(w)>1 ):
             ip = w[1]
             break
-    return ip            
+    return ip       
+
+def gettime(address="rpi.ontimr24.pl"):
+    try:
+        r = str(subprocess.check_output(['wget', '-O', '/tmp/datetime.txt', address] ), encoding='utf-8').strip()
+    except subprocess.CalledProcessError:
+        r= None
+    if r!=None:
+        with open("/tmp/datetime.txt","r") as f:
+            dt = f.read().split()
+        date=dt[0]
+        time=dt[1]
+        print( date, time)            
 
 def gettemp():
     """ get the core temperature and return as float in 'C """
