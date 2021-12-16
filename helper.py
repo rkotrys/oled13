@@ -13,7 +13,7 @@ def getip():
             break
     return ip       
 
-def gettime(address="rpi.ontimr24.pl"):
+def gettime(address="rpi.ontime24.pl"):
     try:
         r = str(subprocess.check_output(['wget', '-O', '/tmp/datetime.txt', address] ), encoding='utf-8').strip()
     except subprocess.CalledProcessError:
