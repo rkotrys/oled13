@@ -15,7 +15,7 @@ def getip():
 
 def gettime(address="rpi.ontime24.pl"):
     try:
-        r = str(subprocess.check_output(['wget', '-O', '/tmp/datetime.txt', address+'/?get=datetime'] ), encoding='utf-8').strip()
+        r = str(subprocess.check_output(['wget', '-O', '/tmp/datetime.txt', '-q', address+'/?get=datetime'] ), encoding='utf-8').strip()
     except subprocess.CalledProcessError:
         r= None
     if r!=None:
