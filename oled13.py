@@ -77,19 +77,19 @@ class oled13:
         self.image = image
         self.lock.release()
 
-    def status1( self, drowinfo=None ):
+    def status1( self, content=" - Status -", drowinfo=None ):
         """ 
             status1( self, drowinfo=None, mode=True )
             drowinfo = instance of 'drowinfo' class
             mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
         """
-        image=drowinfo.drow(h.getrpiinfo(False))
         if self.display_timeout==self.display_timeout_d:
             self.kbd.sethanddle( 'up', drowinfo.key_up_handler )
             self.kbd.sethanddle( 'down', drowinfo.key_down_handler )
         if self.display_timeout==0:
             self.kbd.sethanddle( 'up', self.kbd.keyhandle )
             self.kbd.sethanddle( 'down', self.kbd.keyhandle )
+        image=drowinfo.drow(content)
         self.lock.acquire()
         self.image = image
         self.lock.release()
@@ -144,43 +144,26 @@ class oled13:
         if self.go:    
             #print( "oled13.loop():\n")
             self.s.enter(1, 1, self.loop ) 
-            if self.display_state=='status1':
-                self.status1(drowinfo=self.drowinfo)
+            if self.display_state in ['status1', 'status2', 'status3']:
+                if self.display_state=='status1':
+                    content=h.getrpiinfo(False)
+                if self.display_state=='status2':
+                    content="K2 Status"
+                if self.display_state=='status3':
+                    content="K3 Status"
+                self.status1(drowinfo=self.drowinfo, content=content )    
                 if self.display_timeout > 0:
                     self.display_timeout=self.display_timeout-1
                 else:
                     self.display_state=''
-                    self.status1(drowinfo=self.drowinfo)
                     self.display_timeout=self.display_timeout_d
-
-            if self.display_state=='status2':
-                self.status2(mode=True,drowinfo=self.drowinfo)
-                if self.display_timeout > 0:
-                    self.display_timeout=self.display_timeout-1
-                else:
-                    self.display_state=''
-                    self.status2(mode=False,drowinfo=self.drowinfo)
-                    self.display_timeout=self.display_timeout_d
-                    
-
-            if self.display_state=='status3':
-                self.status3(mode=True,drowinfo=self.drowinfo)
-                if self.display_timeout > 0:
-                    self.display_timeout=self.display_timeout-1
-                else:
-                    self.display_state=''
-                    self.status3(mode=False,drowinfo=self.drowinfo)
-                    self.display_timeout=self.display_timeout_d
-            
             # clock() is the default    
             if self.display_state=='':         
                 self.clock()
                 # add online status info
                 if h.online_status():
                     self.drowicon(icon=0xEC3F,x=128-12,y=0)
-            #self.lock.acquire()
             self.show()
-            #self.lock.release()
         else:  # self.go==False
             self.disp.clear()
             self.disp.reset()
@@ -356,7 +339,7 @@ class drowinfo:
         self.oled.lock.acquire()
         self.oled.image = image
         self.oled.lock.release()
-        self.oled.show()
+#        self.oled.show()
         
         
     def key_down_handler(self,name,state):
@@ -368,7 +351,7 @@ class drowinfo:
         self.oled.lock.acquire()
         self.oled.image = image
         self.oled.lock.release()
-        self.oled.show()
+ #       self.oled.show()
         
         
 
