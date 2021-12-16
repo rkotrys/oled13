@@ -14,6 +14,7 @@ def getip():
     return ip       
 
 def settime(address="rpi.ontime24.pl"):
+    """ get time from 'address' site and set the time to system clock """
     try:
         r = str(subprocess.check_output(['wget', '-O', '/tmp/datetime.txt', '-q', address+'/?get=datetime'] ), encoding='utf-8').strip()
     except subprocess.CalledProcessError:
