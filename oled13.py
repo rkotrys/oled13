@@ -16,15 +16,15 @@ class oled13:
         self.go=True
         # sheduler
         self.s = sched.scheduler(time.time, time.sleep)
-        # OLED 1.3' display
+        # OLED 1.3' display driver
         self.disp = SH1106.SH1106()
-        # Keyboard 
+        # Keyboard driver
         self.kbd=Kbd(self)
         # display state
         self.display_state=''
         self.display_timeout=10
         self.display_timeout_d=10
-        # semafor
+        # semafor for save 'image' modifications
         self.lock = threading.Lock()
         # network params
         self.rpilink_address = rpilink_address
@@ -32,13 +32,13 @@ class oled13:
         # dev info
         self.df=h.getrpiinfo()
         self.netdev=h.getnetdev()
-        # Initialize library.
+        # Initialize and clean the display.
         self.disp.Init()
         self.disp.clear()
         # Graphix items
         self.withe = 0
         self.black = 1
-        self.image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
+        self.image = None #Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         self.font = ImageFont.truetype('fonts/cour.ttf', 26)
         self.font10 = ImageFont.truetype('fonts/cour.ttf',11)
         self.icon = ImageFont.truetype('fonts/segmdl2.ttf', 12)
@@ -50,6 +50,9 @@ class oled13:
         self.kbd.sethanddle( 'k3', self.k3_handle )
         self.kbd.sethanddle( 'enter', self.enter_handle )
         self.kbd.sethanddle( 'right', self.right_handle )
+        self.kbd.sethanddle( 'left', self.left_handle )
+        self.kbd.sethanddle( 'up', self.up_handle )
+        self.kbd.sethanddle( 'down', self.down_handle )
         
 
     def drowicon( self,icon=0xEC44,x=1,y=1,show=False ):
@@ -77,57 +80,23 @@ class oled13:
         self.image = image
         self.lock.release()
 
-    def status1( self, content=" - Status -", drowinfo=None ):
+    def status( self, content=" - Status -", drowinfo=None ):
         """ 
-            status1( self, drowinfo=None, mode=True )
+            status( self, content=" ", drowinfo=None, mode=True )
+            content = list od str or multiline text to display
             drowinfo = instance of 'drowinfo' class
-            mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
         """
         if self.display_timeout==self.display_timeout_d:
             self.kbd.sethanddle( 'up', drowinfo.key_up_handler )
             self.kbd.sethanddle( 'down', drowinfo.key_down_handler )
         if self.display_timeout==0:
-            self.kbd.sethanddle( 'up', self.kbd.keyhandle )
-            self.kbd.sethanddle( 'down', self.kbd.keyhandle )
+            self.kbd.sethanddle( 'up', self.up_handle )
+            self.kbd.sethanddle( 'down', self.down_handle )
         image=drowinfo.drow(content)
         self.lock.acquire()
         self.image = image
         self.lock.release()
-
-    def status2( self, drowinfo=None ):
-        """ 
-            status2( self, drowinfo=None, mode=True )
-            drowinfo = instance of 'drowinfo' class
-            mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
-        """
-        image=drowinfo.drow("  Status 2:\n   1234")
-        if self.display_timeout==self.display_timeout_d:
-            self.kbd.sethanddle( 'up', drowinfo.key_up_handler )
-            self.kbd.sethanddle( 'down', drowinfo.key_down_handler )
-        if self.display_timeout==0:
-            self.kbd.sethanddle( 'up', self.kbd.keyhandle )
-            self.kbd.sethanddle( 'down', self.kbd.keyhandle )
-        self.lock.acquire()
-        self.image = image
-        self.lock.release()
-
-    def status3( self, drowinfo=None ):
-        """ 
-            status3( self, drowinfo=None, mode=True )
-            drowinfo = instance of 'drowinfo' class
-            mode= True (drow info and set Up Down keys handlers) |False (clear key handlers) 
-        """
-        image=drowinfo.drow("  Status 3:\n   xxxx")
-        if self.display_timeout==self.display_timeout_d:
-            self.kbd.sethanddle( 'up', drowinfo.key_up_handler )
-            self.kbd.sethanddle( 'down', drowinfo.key_down_handler )
-        if self.display_timeout==0:
-            self.kbd.sethanddle( 'up', self.kbd.keyhandle )
-            self.kbd.sethanddle( 'down', self.kbd.keyhandle )
-        self.lock.acquire()
-        self.image = image
-        self.lock.release()
-                
+              
         
     def show(self):
         #print( "oled13.show():\n")
@@ -151,7 +120,7 @@ class oled13:
                     content="K2 Status"
                 if self.display_state=='status3':
                     content="K3 Status"
-                self.status1(drowinfo=self.drowinfo, content=content )    
+                self.status(drowinfo=self.drowinfo, content=content )    
                 if self.display_timeout > 0:
                     self.display_timeout=self.display_timeout-1
                 else:
@@ -168,68 +137,6 @@ class oled13:
             self.disp.clear()
             self.disp.reset()
             self.disp.command(0xAE);  #--turn off oled panel
-        
-# system status and info
-    def getdevinfo(self):
-        df = {}
-        with open('/proc/cpuinfo','r') as f:
-            output=str(f.read()).strip().splitlines()
-        for line in output:
-            l=str(line).strip().split()
-            if len(l)>0 and l[0]=='Serial':
-                self.serial=l[2][8:]
-            if len(l)>0 and l[0]=='Hardware':
-                self.chip=l[2]
-            if len(l)>0 and l[0]=='Revision':
-                self.revision=l[2]
-            if len(l)>0 and l[0]=='Model':
-                self.model=str(u' '.join(l[2:])).replace('Raspberry Pi','RPi')
-        with open('/boot/.id','r') as f:
-            msdid=str(f.readline()).strip()
-        self.msdid=msdid    
-        with open('/proc/meminfo','r') as f:
-            memtotal=str(f.readline()).strip().split()[1]
-            memfree=str(f.readline()).strip().split()[1]
-            memavaiable=str(f.readline()).strip().split()[1]
-        self.memtotal= ( int(memtotal) // 1000 )    
-        self.memfree= ( int(memfree) // 1000 )    
-        self.memavaiable= ( int(memavaiable) // 1000 )    
-        self.release=str(proc.check_output(['uname','-r'] ), encoding='utf-8').strip()
-        self.machine=str(proc.check_output(['uname','-m'] ), encoding='utf-8').strip()
-        buf=str(proc.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
-        self.puuid=buf[8:16]
-        self.version='???'
-        with open('/etc/os-release','r') as f:
-            output=f.readlines()
-        for line in output:
-            l=line.split('=')
-            if l[0]!='VERSION':
-                continue
-            else:
-                self.version=str(l[1]).strip().replace('"','').replace("\n",'') 
-                break   
-        self.hostname=str(proc.check_output(['hostname'] ), encoding='utf-8').strip()
-        essid=str(proc.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
-        buf=str(proc.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
-        
-        df['serial']=self.serial
-        df['chip']=self.chip
-        df['revision']=self.revision
-        df['model']=self.model
-        df['memtotal']=self.memtotal
-        df['memfree']=self.memfree
-        df['memavaiable']=self.memavaiable
-        df['release']=self.release
-        df['machine']=self.machine
-        df['hostname']=self.hostname
-        df['puuid']=self.puuid
-        df['version']=self.version
-        df['essid']=essid.split(':')[1].replace('"','')
-        df['fs_total']=buf[1]
-        df['fs_free']=buf[3]
-        df['coretemp']=h.gettemp()
-        df['msdid']=self.msdid
-        return df
 
 # Keyboard callbacks handlers
         
@@ -274,8 +181,19 @@ class oled13:
 
     def right_handle(self,name,state):
         if state=='Down':
-            self.drowicon()
             print( u'rght_handle: {} is {}'.format( name, state ) )    
+
+    def left_handle(self,name,state):
+        if state=='Down':
+            print( u'left_handle: {} is {}'.format( name, state ) )    
+
+    def up_handle(self,name,state):
+        if state=='Down':
+            print( u'up_handle: {} is {}'.format( name, state ) )    
+
+    def down_handle(self,name,state):
+        if state=='Down':
+            print( u'down_handle: {} is {}'.format( name, state ) )    
         
 
 class drowinfo:
