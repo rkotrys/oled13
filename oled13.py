@@ -9,6 +9,7 @@ import SH1106
 import config
 import helper as h
 from Kbd import Kbd
+from rplink import rplink
 
 class oled13:
     def __init__(self, rpilink_address='rpi.ontime24.pl'):
@@ -20,6 +21,8 @@ class oled13:
         self.disp = SH1106.SH1106()
         # Keyboard driver
         self.kbd=Kbd(self)
+        # rpilink object
+        self.rpilink=rplink(rpilink_address='rpi.omtime24.pl', rpilink_period=2)
         # display state
         self.display_state=''
         self.display_timeout=10
