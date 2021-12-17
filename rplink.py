@@ -31,7 +31,6 @@ class rplink:
                 self.d = h.getrpiinfo(self.d)
                 #df['theme']=self.cnf["global"]["theme"]
                 address_str = 'http://'+self.rpilink_address+'/?get=post'
-                print( address_str, '\n' )
                 x = requests.post( address_str, json=self.d, timeout=1)
                 if x.status_code==200:
                     self.rpihub=True
