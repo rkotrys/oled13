@@ -25,7 +25,7 @@ class rplink:
     def rpilink(self):
         """ thread """
         while self.go:
-            time.sleep(self.rpilink_period)    
+            time.sleep(self.rplink_period)    
             if h.online_status():
                 self.d = h.getrpiinfo(self.d)
                 #df['theme']=self.cnf["global"]["theme"]
