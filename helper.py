@@ -162,16 +162,16 @@ def getrpiinfo(dictionary=True, df={} ):
         buf = buf + u"ver: {}\n".format(df['version'])
         buf = buf + u"ESSID: {}\n".format(df['essid'])
         buf = buf + u"CPU temp: {:2.0f}\n".format(float(df['coretemp']))
-        if len(df['ip'])>6:
+        if len(df['ip'])>2:
             buf = buf + u"eth0 IP:\n {}\n".format(df['ip'])
-        if len(df['wip'])>6:
+        if len(df['wip'])>2:
             buf = buf + u"wlan0 IP:\n {}\n".format(df['wip'])
-        if len(df['emac'])>6:
+        if len(df['emac'])>2:
             buf = buf + u"eth0 MAC:\n {}\n".format(df['emac'])
-        if len(df['wmac'])>6:
+        if len(df['wmac'])>2:
             buf = buf + u"wlan0 MAC:\n {}\n".format(df['wmac'])
         for key, value in df.items():
-            if key in ['model', 'serial', 'hostname', 'chip', 'machine', 'puuid','release', 'version','essid','revision','msdid','coretemp','ip','wip','mac','wmac']:
+            if key in ['model', 'serial', 'hostname', 'chip', 'machine', 'puuid','release', 'version','essid','revision','msdid','coretemp','ip','wip','emac','wmac']:
                 continue
             buf = buf + u"{}: {}\n".format(key,value)
         return buf
