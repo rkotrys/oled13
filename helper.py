@@ -81,50 +81,72 @@ def getnetdev():
                 netdev[devname]=(devname,ip,mac)
     return netdev            
     
-def getrpiinfo(dictionary=True):
+def getrpiinfo(dictionary=True, df={} ):
     """ getrpiinfo(out=True) collect RPi params and status information, return as dictionary """
-    df = {}
+    newdata = True if len(df)==0 else False
     df['hostname']=str(subprocess.check_output(['hostname'] ), encoding='utf-8').strip()
-    with open('/boot/.id','r') as f:
-        msdid=str(f.readline()).strip()
-    df['msdid']=msdid    
-    with open('/proc/cpuinfo','r') as f:
-        output=str(f.read()).strip().splitlines()
-    for line in output:
-        l=str(line).strip().split()
-        if len(l)>0 and l[0]=='Serial':
-            df['serial']=l[2][8:]
-        if len(l)>0 and l[0]=='Hardware':
-            df['chip']=l[2]
-        if len(l)>0 and l[0]=='Revision':
-            df['revision']=l[2]
-        if len(l)>0 and l[0]=='Model':
-            df['model']=str(u' '.join(l[2:])).replace('Raspberry Pi','RPi')
-    df['release']=str(subprocess.check_output(['uname','-r'] ), encoding='utf-8').strip()
-    df['version']='???'
-    with open('/etc/os-release','r') as f:
-        output=f.readlines()
-    for line in output:
-        l=line.split('=')
-        if l[0]!='VERSION':
-            continue
-        else:
-            df['version']=str(l[1]).strip().replace('"','').replace("\n",'') 
-            break   
-    df['machine']=str(subprocess.check_output(['uname','-m'] ), encoding='utf-8').strip()
+    netdev=getnetdev()
+    if "eth0" in netdev.keys():
+        ip=netdev['eth0'][1]
+        emac=netdev['eth0'][2]
+    else:
+        ip='--'
+        emac='--'
+    if "wlan0" in netdev.keys():
+        wip=netdev['wlan0'][1]
+        wmac=netdev['wlan0'][2]
+    else:
+        wip='--'
+        wmac='--'
+    df['ip']=ip
+    df['wip']=wip
+    df['emac']=emac
+    df['wmac']=wmac
+    # static
+    if newdata:
+        with open('/boot/.id','r') as f:
+            msdid=str(f.readline()).strip()
+        df['msdid']=msdid    
+        with open('/proc/cpuinfo','r') as f:
+            output=str(f.read()).strip().splitlines()
+        for line in output:
+            l=str(line).strip().split()
+            if len(l)>0 and l[0]=='Serial':
+                df['serial']=l[2][8:]
+            if len(l)>0 and l[0]=='Hardware':
+                df['chip']=l[2]
+            if len(l)>0 and l[0]=='Revision':
+                df['revision']=l[2]
+            if len(l)>0 and l[0]=='Model':
+                df['model']=str(u' '.join(l[2:])).replace('Raspberry Pi','RPi')
+        df['release']=str(subprocess.check_output(['uname','-r'] ), encoding='utf-8').strip()
+        df['version']='???'
+        with open('/etc/os-release','r') as f:
+            output=f.readlines()
+        for line in output:
+            l=line.split('=')
+            if l[0]!='VERSION':
+                continue
+            else:
+                df['version']=str(l[1]).strip().replace('"','').replace("\n",'') 
+                break   
+        df['machine']=str(subprocess.check_output(['uname','-m'] ), encoding='utf-8').strip()
+    # dynamic
     with open('/proc/meminfo','r') as f:
         df['memtotal']=int(str(f.readline()).strip().split()[1])//1000
         df['memfree']=int(str(f.readline()).strip().split()[1])//1000
         df['memavaiable']=int(str(f.readline()).strip().split()[1])//1000
-    buf=str(subprocess.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
-    df['puuid']=buf[8:16]
-    buf=str(subprocess.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
-    df['fs_total']=buf[1]
-    df['fs_free']=buf[3]
-
     essid=str(subprocess.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
     df['essid']=essid.split(':')[1].replace('"','')
     df['coretemp']=gettemp()
+    #static
+    if newdata:
+        buf=str(subprocess.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
+        df['puuid']=buf[8:16]
+        buf=str(subprocess.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
+        df['fs_total']=buf[1]
+        df['fs_free']=buf[3]
+
 
     if dictionary:
         return df
@@ -145,3 +167,5 @@ def getrpiinfo(dictionary=True):
                 continue
             buf = buf + u"{}: {}\n".format(key,value)
         return buf
+    
+    
