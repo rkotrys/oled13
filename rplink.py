@@ -10,10 +10,11 @@ class rplink:
     """ class 'rplink' xchange information and command with 'rpihub' server """
     def __init__(self, rpilink_address='rpi.ontime24.pl',rpilink_period=1):
         """ constructor """
+        self.rpilink_address=rpilink_address
+        self.rplink_period=rpilink_period
         self.d=h.getrpiinfo()
         self.n=h.getnetdev()
         self.go=True
-        self.rplink_period=rpilink_period
         self.isonline=h.online_status()
         self.rpihub=False
         self.goodtime=False
