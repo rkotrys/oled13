@@ -157,7 +157,7 @@ def getrpiinfo(dictionary=True, df={} ):
         buf = buf + u"msdid: {}\n".format(df['msdid'])
         buf = buf + u"ser: {}\n".format(df['serial'])
         buf = buf + u"puuid: {}\n".format(df['puuid'])
-        buf = buf + u"c: {} {}\n".format(df['chip'],df['machine'])
+        buf = buf + u"HW:{} {}\n".format(df['chip'],df['machine'])
         buf = buf + u"Linux: {}\n".format(df['release'])
         buf = buf + u"ver: {}\n".format(df['version'])
         buf = buf + u"ESSID: {}\n".format(df['essid'])
