@@ -162,8 +162,16 @@ def getrpiinfo(dictionary=True, df={} ):
         buf = buf + u"ver: {}\n".format(df['version'])
         buf = buf + u"ESSID: {}\n".format(df['essid'])
         buf = buf + u"CPU temp: {:2.0f}\n".format(float(df['coretemp']))
+        if len(df['ip'])>6:
+            buf = buf + u"eth0 IP:\n {}\n".format(df['ip'])
+        if len(df['wip'])>6:
+            buf = buf + u"wlan0 IP:\n {}\n".format(df['wip'])
+        if len(df['emac'])>6:
+            buf = buf + u"eth0 MAC:\n {}\n".format(df['emac'])
+        if len(df['wmac'])>6:
+            buf = buf + u"wlan0 MAC:\n {}\n".format(df['wmac'])
         for key, value in df.items():
-            if key in ['model', 'serial', 'hostname', 'chip', 'machine', 'puuid','release', 'version','essid','revision','msdid','coretemp']:
+            if key in ['model', 'serial', 'hostname', 'chip', 'machine', 'puuid','release', 'version','essid','revision','msdid','coretemp','ip','wip','mac','wmac']:
                 continue
             buf = buf + u"{}: {}\n".format(key,value)
         return buf
