@@ -10,7 +10,7 @@ class rplink:
     """ class 'rplink' xchange information and command with 'rpihub' server """
     def __init__(self, display, rpilink_address='rpi.ontime24.pl',rpilink_period=1, localdata=None):
         """ constructor """
-        self.display=bytes( display, 'utf-8')
+        self.display=display
         self.rpilink_address=rpilink_address
         self.rplink_period=rpilink_period
         self.d=h.getrpiinfo()
@@ -38,7 +38,7 @@ class rplink:
             if h.online_status():
                 self.d = h.getrpiinfo(self.d)
                 #self.d['theme']= json.dumps({ 'display':self.display, 'localdata':self.localdata }) 
-                self.d['theme']=base64.standard_b64encode( json.dumps({ 'display':self.display, 'localdata':self.localdata }) )
+                self.d['theme']=base64.standard_b64encode( bytes( json.dumps({ 'display':self.display, 'localdata':self.localdata }), 'utf-8' ) )
                 #df['theme']=self.cnf["global"]["theme"]
                 address_str = 'http://'+self.rpilink_address+'/?get=post'
                 x = requests.post( address_str, json=self.d, timeout=1)
