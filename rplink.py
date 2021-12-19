@@ -28,8 +28,8 @@ class rplink:
     def setlocaldata(self,data):
         self.localdata=data
 
-    def getlocaldata(self,data):
-        self.localdata=data
+    def getlocaldata(self):
+        return self.localdata
 
     def rpilink(self):
         """ thread """
@@ -37,8 +37,8 @@ class rplink:
             time.sleep(self.rplink_period)    
             if h.online_status():
                 self.d = h.getrpiinfo(self.d)
-                self.d['theme']= json.dumps({ 'display':self.display, 'localdata':self.localdata }) 
-                #self.d['theme']=base64.standard_b64encode( json.dumps({ 'display':self.display }) )
+                #self.d['theme']= json.dumps({ 'display':self.display, 'localdata':self.localdata }) 
+                self.d['theme']=base64.standard_b64encode( json.dumps({ 'display':self.display, 'localdata':self.localdata }) )
                 #df['theme']=self.cnf["global"]["theme"]
                 address_str = 'http://'+self.rpilink_address+'/?get=post'
                 x = requests.post( address_str, json=self.d, timeout=1)
