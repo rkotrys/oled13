@@ -23,6 +23,7 @@ class oled13:
         self.kbd=Kbd(self)
         # rpilink object
         self.rpilink=rplink(display='oled13', rpilink_address='rpi.ontime24.pl', rpilink_period=2)
+        self.rpilink.setlocaldata( {'theme':'mono'} )
         # display state
         self.display_state=''
         self.display_timeout=10
@@ -35,6 +36,7 @@ class oled13:
         # dev info
         self.df=h.getrpiinfo()
         self.netdev=h.getnetdev()
+        self.rpilink.setlocaldata( {'netdev':self.netdev, 'msdid':self.df['msdid'], 'essid':self.df['essid'], 'coretemp':self.df['coretemp'], 'memavaiable':self.df['memavaiable']} )
         # Initialize and clean the display.
         self.disp.Init()
         self.disp.clear()

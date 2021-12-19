@@ -8,7 +8,7 @@ import helper as h
 
 class rplink:
     """ class 'rplink' xchange information and command with 'rpihub' server """
-    def __init__(self, display, rpilink_address='rpi.ontime24.pl',rpilink_period=1, localdata=None):
+    def __init__(self, display, rpilink_address='rpi.ontime24.pl',rpilink_period=1, localdata={}):
         """ constructor """
         self.display=display
         self.rpilink_address=rpilink_address
@@ -26,7 +26,8 @@ class rplink:
         self.x_rpilink.start()
 
     def setlocaldata(self,data):
-        self.localdata=data
+        for key, val in data.items():
+            self.localdata[key]=val
 
     def getlocaldata(self):
         return self.localdata
