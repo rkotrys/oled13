@@ -10,7 +10,7 @@ class rplink:
     """ class 'rplink' xchange information and command with 'rpihub' server """
     def __init__(self, display, rpilink_address='rpi.ontime24.pl',rpilink_period=1, localdata=None):
         """ constructor """
-        self.display=display
+        self.display=bytes( display, 'utf-8')
         self.rpilink_address=rpilink_address
         self.rplink_period=rpilink_period
         self.d=h.getrpiinfo()
