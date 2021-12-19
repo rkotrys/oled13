@@ -8,8 +8,9 @@ import helper as h
 
 class rplink:
     """ class 'rplink' xchange information and command with 'rpihub' server """
-    def __init__(self, rpilink_address='rpi.ontime24.pl',rpilink_period=1):
+    def __init__(self, display, rpilink_address='rpi.ontime24.pl',rpilink_period=1, localdata=None):
         """ constructor """
+        self.display=display
         self.rpilink_address=rpilink_address
         self.rplink_period=rpilink_period
         self.d=h.getrpiinfo()
@@ -18,10 +19,17 @@ class rplink:
         self.isonline=h.online_status()
         self.rpihub=False
         self.goodtime=False
+        self.localdata=localdata
         proc.run(['/bin/timedatectl', 'set-ntp', 'false' ])
         # start
         self.x_rpilink = threading.Thread( name='rpilink', target=self.rpilink, args=(), daemon=True)
         self.x_rpilink.start()
+
+    def setlocaldata(self,data):
+        self.localdata=data
+
+    def getlocaldata(self,data):
+        self.localdata=data
 
     def rpilink(self):
         """ thread """
@@ -29,6 +37,8 @@ class rplink:
             time.sleep(self.rplink_period)    
             if h.online_status():
                 self.d = h.getrpiinfo(self.d)
+                self.d['theme']= json.dumps({ 'display':self.display, 'localdata':self.localdata }) 
+                #self.d['theme']=base64.standard_b64encode( json.dumps({ 'display':self.display }) )
                 #df['theme']=self.cnf["global"]["theme"]
                 address_str = 'http://'+self.rpilink_address+'/?get=post'
                 x = requests.post( address_str, json=self.d, timeout=1)
