@@ -21,7 +21,6 @@ class rplink:
         self.goodtime=False
         syslog.openlog(self.display)
         self.localdata=localdata
-        logging.basicConfig(format='%(asctime)s-%(process)d-%(levelname)s-%(filename)s-%(message)s')
         proc.run(['/bin/timedatectl', 'set-ntp', 'false' ])
         # start
         self.x_rpilink = threading.Thread( name='rpilink', target=self.rpilink, args=(), daemon=True)
