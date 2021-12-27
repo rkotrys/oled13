@@ -59,7 +59,7 @@ class rplink:
                     self.logger.info( '[{}] post connection to {} fail'.format(self.display,self.rpilink_address) )
                     continue
                 
-                self.logger.debag( '[{}] post connection to {} has status code {}'.format(self.display,self.rpilink_address,x.status_code) )
+                self.logger.debug( '[{}] post connection to {} has status code {}'.format(self.display,self.rpilink_address,x.status_code) )
                 if x.status_code==200:
                     self.rpihub=True
                     # read respoce
