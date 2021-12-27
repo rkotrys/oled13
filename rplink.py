@@ -48,7 +48,7 @@ class rplink:
                 try:
                     x = requests.post( address_str, json=self.d, timeout=1)
                 except requests.exceptions.RequestException as e:
-                    syslog.syslog( syslog.LOG_WARNING, '['+self.display+'] post connection to ' + self.rpilink_address + ' fail' )
+                    syslog.syslog( '['+self.display+'] post connection to ' + self.rpilink_address + ' fail' )
                     continue
                 
                 if x.status_code==200:
