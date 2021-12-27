@@ -135,7 +135,7 @@ class oled13:
             if self.display_state=='':         
                 self.clock()
                 # add online status info
-                if h.online_status():
+                if self.rpilink.isonline:
                     self.drowicon(icon=0xEC3F,x=128-12,y=0)
             self.show()
         else:  # self.go==False
