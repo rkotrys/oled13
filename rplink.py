@@ -1,7 +1,10 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-import time, sched, threading, requests, json, base64, syslog
+
+import time, sched, threading, requests, json, base64, logging, logging.handlers
+from logging.handlers import SysLogHandler
+from logging import Formatter
 from datetime import datetime
 import subprocess as proc
 import helper as h
@@ -19,7 +22,12 @@ class rplink:
         self.isonline=h.online_status()
         self.rpihub=False
         self.goodtime=False
-        syslog.openlog(self.display)
+        self.logger = logging.getLogger(self.display)
+        self.logger.setLevel( logging.DEBUG )
+        self.log_handler = SysLogHandler(facility=SysLogHandler.LOG_DAEMON, address='/dev/log')
+        self.log_handler.setFormatter(Formatter(fmt='[%(levelname)s] %(filename)s:%(funcName)s:%(lineno)d \"%(message)s\"'))
+        self.logger.addHandler( self.log_handler )
+        self.logger.debug('rpilink logger is start!')
         self.localdata=localdata
         proc.run(['/bin/timedatectl', 'set-ntp', 'false' ])
         # start
