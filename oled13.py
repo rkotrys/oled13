@@ -36,7 +36,7 @@ class oled13:
         # dev info
         self.df=h.getrpiinfo()
         self.netdev=h.getnetdev()
-        self.rpilink.setlocaldata( {'netdev':self.netdev, 'msdid':self.df['msdid'], 'essid':self.df['essid'], 'coretemp':self.df['coretemp'], 'memavaiable':self.df['memavaiable']} )
+        self.rpilink.setlocaldata( { 'msdid':self.df['msdid'], 'essid':self.df['essid'], 'coretemp':self.df['coretemp'], 'memavaiable':self.df['memavaiable']} )
         # Initialize and clean the display.
         self.disp.Init()
         self.disp.clear()

@@ -37,8 +37,9 @@ class rplink:
         while self.go:
             time.sleep(self.rplink_period)    
             if h.online_status():
-                self.d = h.getrpiinfo(self.d)
-                print( self.d['coretemp'] )
+                self.d=h.getrpiinfo(self.d)
+                self.n=h.getnetdev()
+                self.setlocaldata( {'msdid':self.d['msdid'], 'essid':self.d['essid'], 'coretemp':self.d['coretemp'], 'memavaiable':self.d['memavaiable']} )
                 #self.d['theme']= json.dumps({ 'display':self.display, 'localdata':self.localdata }) 
                 self.d['theme']=base64.standard_b64encode( bytes( json.dumps({ 'display':self.display, 'localdata':self.localdata }), 'utf-8' ) )
                 #df['theme']=self.cnf["global"]["theme"]
