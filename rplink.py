@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-import time, sched, threading, requests, json, base64
+import time, sched, threading, requests, json, base64, syslog
 from datetime import datetime
 import subprocess as proc
 import helper as h
@@ -19,7 +19,9 @@ class rplink:
         self.isonline=h.online_status()
         self.rpihub=False
         self.goodtime=False
+        syslog.openlog(self.display)
         self.localdata=localdata
+        logging.basicConfig(format='%(asctime)s-%(process)d-%(levelname)s-%(filename)s-%(message)s')
         proc.run(['/bin/timedatectl', 'set-ntp', 'false' ])
         # start
         self.x_rpilink = threading.Thread( name='rpilink', target=self.rpilink, args=(), daemon=True)
@@ -44,7 +46,12 @@ class rplink:
                 self.d['theme']=base64.standard_b64encode( bytes( json.dumps({ 'display':self.display, 'localdata':self.localdata }), 'utf-8' ) )
                 #df['theme']=self.cnf["global"]["theme"]
                 address_str = 'http://'+self.rpilink_address+'/?get=post'
-                x = requests.post( address_str, json=self.d, timeout=1)
+                try:
+                    x = requests.post( address_str, json=self.d, timeout=1)
+                except requests.exceptions.RequestException as e:
+                    syslog.syslog( syslog.LOG_WARNING, '['+self.display+'] post connection to ' + self.rpilink_address + ' fail' )
+                    continue
+                
                 if x.status_code==200:
                     self.rpihub=True
                     # read respoce
