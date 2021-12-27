@@ -27,7 +27,7 @@ class rplink:
         self.log_handler = SysLogHandler(facility=SysLogHandler.LOG_DAEMON, address='/dev/log')
         self.log_handler.setFormatter(Formatter(fmt='[%(levelname)s] %(filename)s:%(funcName)s:%(lineno)d \"%(message)s\"'))
         self.logger.addHandler( self.log_handler )
-        self.logger.debug('rpilink logger is start!')
+        self.logger.info('[{}] rpilink logger is start!'.format(self.display))
         self.localdata=localdata
         proc.run(['/bin/timedatectl', 'set-ntp', 'false' ])
         # start
@@ -56,9 +56,10 @@ class rplink:
                 try:
                     x = requests.post( address_str, json=self.d, timeout=1)
                 except requests.exceptions.RequestException as e:
-                    syslog.syslog( '['+self.display+'] post connection to ' + self.rpilink_address + ' fail' )
+                    self.logger.info( '[{}] post connection to {} fail'.format(self.display,self.rpilink_address) )
                     continue
                 
+                self.logger.debag( '[{}] post connection to {} has status code {}'.format(self.display,self.rpilink_address,x.status_code) )
                 if x.status_code==200:
                     self.rpihub=True
                     # read respoce
