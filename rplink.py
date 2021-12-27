@@ -19,7 +19,7 @@ class rplink:
         self.d=h.getrpiinfo()
         self.n=h.getnetdev()
         self.go=True
-        self.isonline=h.online_status()
+        self.isonline=False
         self.rpihub=False
         self.goodtime=False
         self.logger = logging.getLogger(self.display)
@@ -31,7 +31,9 @@ class rplink:
         self.localdata=localdata
         proc.run(['/bin/timedatectl', 'set-ntp', 'false' ])
         # start
+        self.x_checklink = threading.Thread( name='checklink', target=self.checklink, args=(), daemon=True)
         self.x_rpilink = threading.Thread( name='rpilink', target=self.rpilink, args=(), daemon=True)
+        self.x_checklink.start()
         self.x_rpilink.start()
 
     def setlocaldata(self,data):
@@ -41,11 +43,17 @@ class rplink:
     def getlocaldata(self):
         return self.localdata
 
+    def checklink(self,address='8.8.8.8'):
+        """ thread """
+        while self.go:
+            self.isonline=h.online_status(address)
+            time.sleep(self.rplink_period)
+
     def rpilink(self):
         """ thread """
         while self.go:
             time.sleep(self.rplink_period)    
-            if h.online_status():
+            if self.isonline:
                 self.d=h.getrpiinfo(self.d)
                 self.n=h.getnetdev()
                 self.setlocaldata( {'msdid':self.d['msdid'], 'essid':self.d['essid'], 'coretemp':self.d['coretemp'], 'memavaiable':self.d['memavaiable']} )
@@ -59,7 +67,7 @@ class rplink:
                     self.logger.info( '[{}] post connection to {} fail'.format(self.display,self.rpilink_address) )
                     continue
                 
-                self.logger.debug( '[{}] post connection to {} has status code {}'.format(self.display,self.rpilink_address,x.status_code) )
+                #self.logger.debug( '[{}] post connection to {} has status code {}'.format(self.display,self.rpilink_address,x.status_code) )
                 if x.status_code==200:
                     self.rpihub=True
                     # read respoce
@@ -100,7 +108,7 @@ class rplink:
                 else:
                     self.rpihub=False
             else:
-                print("rplink Of-line")        
+                self.logger.debug( '[{}] rplink is OF-Line'.format(self.display,self.rpilink_address) )
         else:
             self.x_rpilink.stop() 
                        
