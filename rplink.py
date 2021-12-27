@@ -90,6 +90,8 @@ class rplink:
                         print( 'ERROR:' + r['status'] )    
                 else:
                     self.rpihub=False
+            else:
+                print("rplink Of-line")        
         else:
             self.x_rpilink.stop() 
                        
