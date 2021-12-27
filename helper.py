@@ -102,11 +102,17 @@ def getrpiinfo(dictionary=True, df={} ):
     df['wip']=wip
     df['emac']=emac
     df['wmac']=wmac
+    with open('/proc/meminfo','r') as f:
+        df['memtotal']=int(str(f.readline()).strip().split()[1])//1000
+        df['memfree']=int(str(f.readline()).strip().split()[1])//1000
+        df['memavaiable']=int(str(f.readline()).strip().split()[1])//1000
+    essid=str(subprocess.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
+    df['essid']=essid.split(':')[1].replace('"','')
+    df['coretemp']=gettemp()
     # static
     if newdata:
         with open('/boot/.id','r') as f:
-            msdid=str(f.readline()).strip()
-        df['msdid']=msdid    
+            df['msdid']=str(f.readline()).strip()
         with open('/proc/cpuinfo','r') as f:
             output=str(f.read()).strip().splitlines()
         for line in output:
@@ -131,22 +137,11 @@ def getrpiinfo(dictionary=True, df={} ):
                 df['version']=str(l[1]).strip().replace('"','').replace("\n",'') 
                 break   
         df['machine']=str(subprocess.check_output(['uname','-m'] ), encoding='utf-8').strip()
-    # dynamic
-    with open('/proc/meminfo','r') as f:
-        df['memtotal']=int(str(f.readline()).strip().split()[1])//1000
-        df['memfree']=int(str(f.readline()).strip().split()[1])//1000
-        df['memavaiable']=int(str(f.readline()).strip().split()[1])//1000
-    essid=str(subprocess.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
-    df['essid']=essid.split(':')[1].replace('"','')
-    df['coretemp']=gettemp()
-    #static
-    if newdata:
         buf=str(subprocess.check_output(['blkid','/dev/mmcblk0'] ), encoding='utf-8').strip().split()[1]
         df['puuid']=buf[8:16]
         buf=str(subprocess.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
         df['fs_total']=buf[1]
         df['fs_free']=buf[3]
-
 
     if dictionary:
         return df

@@ -22,7 +22,7 @@ class oled13:
         # Keyboard driver
         self.kbd=Kbd(self)
         # rpilink object
-        self.rpilink=rplink(display='oled13', rpilink_address='rpi.ontime24.pl', rpilink_period=2)
+        self.rpilink=rplink(display='oled13', rpilink_address=rpilink_address, rpilink_period=2)
         self.rpilink.setlocaldata( {'theme':'mono'} )
         # display state
         self.display_state=''
