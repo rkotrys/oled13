@@ -306,7 +306,7 @@ def main():
 
 def sigint_handler(signum, frame):
     global oled
-    oled.rplink.logger.debug( u'[{}] exit by SIGINT'.format(oled.display) )
+    oled.rpilink.logger.debug( u'[{}] exit by SIGINT'.format(oled.display) )
     oled.go=False
     oled.disp.clear()
     time.sleep(3)
@@ -314,7 +314,7 @@ def sigint_handler(signum, frame):
 
 def sigterm_handler(signum, frame):
     global oled
-    oled.rplink.logger.debug( u'[{}] exit by SIGTERM'.format(oled.display) )
+    oled.rpilink.logger.debug( u'[{}] exit by SIGTERM'.format(oled.display) )
     oled.go=False
     oled.disp.clear()
     time.sleep(3) 
@@ -322,7 +322,7 @@ def sigterm_handler(signum, frame):
 
 def sighup_handler(signum, frame):
     global oled
-    oled.rplink.logger.debug( u'[{}] get SIGHUP'.format(oled.display) )
+    oled.rpilink.logger.debug( u'[{}] get SIGHUP'.format(oled.display) )
 
 if __name__ == "__main__":
     main()
