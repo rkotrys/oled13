@@ -42,6 +42,9 @@ class rplink:
 
     def getlocaldata(self):
         return self.localdata
+    
+    def stop(self):
+        self.go=False
 
     def checklink(self,address='8.8.8.8'):
         """ thread """
@@ -116,19 +119,36 @@ class rplink:
             self.x_rpilink.stop() 
                        
 # use the rplink 'solo' as a system service
+rpl=None
 def main():
+    global rpl
     link_address=sys.argv[1] if len(sys.argv)>1 else 'rpi.ontime24.pl'
     link_period=sys.argv[2] if len(sys.argv)>2 else 1
     local_data={ 'theme': 'headless' }
-    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGINT, sigint_handler)
+    signal.signal(signal.SIGTERM, sigterm_handler)
+    signal.signal(signal.SIGHUP, sighup_handler)
     rpl = rplink(display='solo',rpilink_address=link_address,rpilink_period=link_period, localdata=local_data)
     
     while rpl.go:
         time.sleep(1)
 
-def signal_handler(signum, frame):
-    print( 'Exit' )
-    exit( 0 )    
+def sigint_handler(signum, frame):
+    global rpl
+    rpl.stop()    
+    time.sleep(3)
+    sys.exit( 0 )    
+
+def sigterm_handler(signum, frame):
+    global rpl
+    rpl.stop()   
+    time.sleep(3) 
+    sys.exit( 0 )    
+
+def sighup_handler(signum, frame):
+    global rpl
+    print('\nrplink get the SIGHUP\n');
+
 
 if __name__ == "__main__":
     main()
