@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-import time, sched, threading
+import time, sched, threading, sys
 from datetime import datetime
 from PIL import Image,ImageDraw,ImageFont
 import subprocess as proc
@@ -276,5 +276,31 @@ class drowinfo:
         self.oled.lock.release()
  #       self.oled.show()
         
+
+def main():
+    link_address=sys.argv[1] if len(sys.argv)>1 else 'rpi.ontime24.pl'
+    try:
+        oled = oled13(rpilink_address=link_address)
+        oled.loop()
+        oled.run()
+        while oled.go:
+            time.sleep(1)
+        oled.disp.clear()
+        oled.disp.reset()
+        oled.disp.command(0xAE);  #--turn off oled panel
+        exit()
+        
+    except IOError as e:
+        print(e)
+        
+    except KeyboardInterrupt:    
+    #    config.module_exit()
+        oled.disp.clear()
+        oled.disp.reset()
+        oled.disp.command(0xAE);  #--turn off oled panel
+        exit()    
+
+if __name__ == "__main__":
+    main()
         
 
