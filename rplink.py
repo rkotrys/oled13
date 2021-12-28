@@ -135,17 +135,19 @@ def main():
 
 def sigint_handler(signum, frame):
     global rpl
+    rpl.logger.debug( u'[{}] exit by sigint'.format(rpl.display) )
     time.sleep(3)
     sys.exit( 0 )    
 
 def sigterm_handler(signum, frame):
     global rpl
+    rpl.logger.debug( u'[{}] exit by sigterm'.format(rpl.display) )
     time.sleep(3) 
     sys.exit( 0 )    
 
 def sighup_handler(signum, frame):
     global rpl
-    print('\nrplink get the SIGHUP\n');
+    rpl.logger.debug( u'[{}] get SIGHUP'.format(rpl.display) )
 
 
 if __name__ == "__main__":
