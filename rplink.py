@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 
-import time, sched, threading, requests, json, base64, logging, logging.handlers
+import sys, time, sched, threading, requests, json, base64, logging, logging.handlers
 from logging.handlers import SysLogHandler
 from logging import Formatter
 from datetime import datetime
@@ -83,33 +83,47 @@ class rplink:
                             cp=proc.run(['/bin/timedatectl', 'set-time', curent_date_time[1] ])
                             if cp.returncode==0:
                                 self.goodtime=True
-                        # theme
-                        #if r['cmd']['name']=='theme':
-                        #    self.cnf["global"]["theme"]=r['cmd']['value']
-                        #    clock.cnf.save()
-                        #
-                        # hostname    
+                        # set hostname    
                         if r['cmd']['name']=='hostname' and r['cmd']['sn']==self.d['serial']:
                             h.hostname(r['cmd']['value'])
-                        # reboot
+                            self.logger.debug( u'[{}] rplink_command: hostname is chneged from {} to {}'.format(self.display,self.d['hostname'],r['cmd']['value']) )
+                        # exec reboot
                         if r['cmd']['name']=='reboot' and r['cmd']['sn']==self.d['serial']:
+                            self.logger.debug( u'[{}] rplink_command: system reboot'.format(self.display) )
                             result = proc.run(['/bin/systemctl', 'reboot'],capture_output=True, text=True);
-                        # poweroff
+                        # exec poweroff
                         if r['cmd']['name']=='poweroff' and r['cmd']['sn']==self.d['serial']:
+                            self.logger.debug( u'[{}] rplink_command: system poweroff'.format(self.display) )
                             result = proc.run(['/bin/systemctl', 'poweroff'],capture_output=True, text=True);
-                        # update agent software <LCD144,|oled13>
+                        # exec update agent software <LCD144,|oled13>
                         if r['cmd']['name']=='update' and r['cmd']['sn']==self.d['serial']:
+                            self.logger.debug( u'[{}] rplink_command: code update from git repo'.format(self.display) )
                             result = proc.run(['/bin/git pull'], cwd='/root/'+r['cmd']['service'], shell=True, capture_output=True, text=True);
                             #print("stdout: ", result.stdout)
                             #print("stderr: ", result.stderr)
                                 
                     else:
-                        print( 'ERROR:' + r['status'] )    
+                        self.logger.debug( u'[{}] rplink_responce_error: {}'.format(self.display, r['status']) )
                 else:
+                    self.logger.debug( u'[{}] rplink_status_error: {}'.format(self.display, x.status_code ) )
                     self.rpihub=False
             else:
-                self.logger.debug( '[{}] rplink is OF-Line'.format(self.display,self.rpilink_address) )
+                self.logger.debug( '[{}] device is OF-Line'.format(self.display,self.rpilink_address) )
         else:
             self.x_rpilink.stop() 
                        
+# use the rplink 'solo' as a system service
+def main():
+    link_address=sys.argv[1] if len(sys.argv)>1 else 'rpi.ontime24.pl'
+    link_period=sys.argv[2] if len(sys.argv)>2 else 1
+    local_data={ 'theme': 'headless' }
+    rpl = rplink(display='solo',rpilink_address=link_address,rpilink_period=link_period, localdata=local_data)
+    
+    while rpl.go:
+        time.sleep(1)
+    
+
+if __name__ == "__main__":
+    main()
+
 #end of rpilink()
