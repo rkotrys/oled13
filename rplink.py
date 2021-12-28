@@ -105,10 +105,13 @@ class rplink:
                     else:
                         self.logger.debug( u'[{}] rplink_responce_error: {}'.format(self.display, r['status']) )
                 else:
-                    self.logger.debug( u'[{}] rplink_status_error: {}'.format(self.display, x.status_code ) )
+                    if self.rpihub==True:
+                        self.logger.debug( u'[{}] rplink_status_error: {}'.format(self.display, x.status_code ) )
                     self.rpihub=False
             else:
-                self.logger.debug( '[{}] device is OF-Line'.format(self.display,self.rpilink_address) )
+                if self.rpihub==True:
+                    self.rpihub=False
+                    self.logger.debug( '[{}] device is OF-Line, address {}'.format(self.display,self.rpilink_address) )
         else:
             self.x_rpilink.stop() 
                        
