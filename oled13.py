@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-import time, sched, threading, sys
+import time, sched, threading, sys, signal
 from datetime import datetime
 from PIL import Image,ImageDraw,ImageFont
 import subprocess as proc
@@ -276,10 +276,14 @@ class drowinfo:
         self.oled.lock.release()
  #       self.oled.show()
         
-
+oled=None
 def main():
+    global oled
     link_address=sys.argv[1] if len(sys.argv)>1 else 'rpi.ontime24.pl'
     try:
+        signal.signal(signal.SIGINT, sigint_handler)
+        signal.signal(signal.SIGTERM, sigterm_handler)
+        signal.signal(signal.SIGHUP, sighup_handler)
         oled = oled13(rpilink_address=link_address)
         oled.loop()
         oled.run()
@@ -288,7 +292,7 @@ def main():
         oled.disp.clear()
         oled.disp.reset()
         oled.disp.command(0xAE);  #--turn off oled panel
-        exit()
+        sys.exit(0)
         
     except IOError as e:
         print(e)
@@ -299,6 +303,26 @@ def main():
         oled.disp.reset()
         oled.disp.command(0xAE);  #--turn off oled panel
         exit()    
+
+def sigint_handler(signum, frame):
+    global oled
+    oled.rplink.logger.debug( u'[{}] exit by SIGINT'.format(oled.display) )
+    oled.go=False
+    oled.disp.clear()
+    time.sleep(3)
+    sys.exit( 0 )    
+
+def sigterm_handler(signum, frame):
+    global oled
+    oled.rplink.logger.debug( u'[{}] exit by SIGTERM'.format(oled.display) )
+    oled.go=False
+    oled.disp.clear()
+    time.sleep(3) 
+    sys.exit( 0 )    
+
+def sighup_handler(signum, frame):
+    global oled
+    oled.rplink.logger.debug( u'[{}] get SIGHUP'.format(oled.display) )
 
 if __name__ == "__main__":
     main()
