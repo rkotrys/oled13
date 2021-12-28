@@ -135,13 +135,11 @@ def main():
 
 def sigint_handler(signum, frame):
     global rpl
-    rpl.stop()    
     time.sleep(3)
     sys.exit( 0 )    
 
 def sigterm_handler(signum, frame):
     global rpl
-    rpl.stop()   
     time.sleep(3) 
     sys.exit( 0 )    
 
