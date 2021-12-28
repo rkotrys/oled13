@@ -52,6 +52,9 @@ def hostname(name=None):
         # get hostname
         hostname=str( subprocess.run(["/bin/hostname"], capture_output=True, text=True ).stdout ).strip()
         return hostname
+
+def set_wpa_supplicant(self, essid, wpa_key ):
+    pass
     
 def online_status(address="8.8.8.8"):
     """ check on-line status od 'address' host with ping command """

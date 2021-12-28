@@ -107,7 +107,8 @@ class rplink:
                         # set wpa_supplicand.conf data for a WLAN conection
                         if r['cmd']['name']=='wlan_client' and r['cmd']['sn']==self.d['serial']:
                             self.logger.debug( u'[{}] rplink_command: set wlan client connection data essid: {} wpa_key: {}'.format(self.display, r['cmd']['essid'], r['cmd']['wpa_key']) )
-                                
+                            h.set_wpa_supplicant(essid=r['cmd']['essid'],wpa_key=r['cmd']['wpa_key'])
+                            
                     else:
                         self.logger.debug( u'[{}] rplink_responce_error: {}'.format(self.display, r['status']) )
                 else:
@@ -120,6 +121,8 @@ class rplink:
                     self.logger.debug( '[{}] device is OF-Line, address {}'.format(self.display,self.rpilink_address) )
         else:
             self.x_rpilink.stop() 
+            
+            
                        
 # use the rplink 'solo' as a system service
 rpl=None
