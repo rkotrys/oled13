@@ -53,7 +53,7 @@ def hostname(name=None):
         hostname=str( subprocess.run(["/bin/hostname"], capture_output=True, text=True ).stdout ).strip()
         return hostname
 
-def set_wpa_supplicant(self, essid, wpa_key ):
+def set_wpa_supplicant( essid, wpa_key ):
     pass
     
 def online_status(address="8.8.8.8"):
