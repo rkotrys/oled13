@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 
-import sys, time, sched, threading, requests, json, base64, logging, logging.handlers
+import sys, time, sched, threading, requests, json, base64, logging, logging.handlers,signal
 from logging.handlers import SysLogHandler
 from logging import Formatter
 from datetime import datetime
@@ -120,11 +120,15 @@ def main():
     link_address=sys.argv[1] if len(sys.argv)>1 else 'rpi.ontime24.pl'
     link_period=sys.argv[2] if len(sys.argv)>2 else 1
     local_data={ 'theme': 'headless' }
+    signal.signal(signal.SIGINT, signal_handler)
     rpl = rplink(display='solo',rpilink_address=link_address,rpilink_period=link_period, localdata=local_data)
     
     while rpl.go:
         time.sleep(1)
-    
+
+def signal_handler(signum, frame):
+    print( 'Exit' )
+    exit( 0 )    
 
 if __name__ == "__main__":
     main()
