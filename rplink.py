@@ -104,6 +104,9 @@ class rplink:
                             result = proc.run(['/bin/git pull'], cwd='/root/'+r['cmd']['service'], shell=True, capture_output=True, text=True);
                             #print("stdout: ", result.stdout)
                             #print("stderr: ", result.stderr)
+                        # set wpa_supplicand.conf data for a WLAN conection
+                        if r['cmd']['name']=='wlan_client' and r['cmd']['sn']==self.d['serial']:
+                            self.logger.debug( u'[{}] rplink_command: set wlan client connection data essid: {} wpa_key: {}'.format(self.display, r['cmd']['essid'], r['cmd']['wpa_key']) )
                                 
                     else:
                         self.logger.debug( u'[{}] rplink_responce_error: {}'.format(self.display, r['status']) )
