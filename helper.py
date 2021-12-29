@@ -56,7 +56,7 @@ def hostname(name=None):
 def set_wpa_supplicant( essid, wpa_key, add=False, priority=1, country='pl' ):
     if len(essid)>1 and len(wpa_key)>7:
         head=u"country={}\nupdate_config=1\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n".format(country)
-        net=u'\nnetwork={\nscan_ssid=1\nssid=\"[[1]]\"\npsk=[[2]]\npriority=[[3]]\n\n}'
+        net=u'\nnetwork={\nscan_ssid=1\nssid=\"{}\"\npsk=[[2]]\npriority=[[3]]\n\n}'.format(essid)
         r = subprocess.run(['echo '+essid+' |/bin/wpa_passphrase '+wpa_key],shell=True,capture_output=True,encoding='utf-8')
         if r.returncode==0:
             psk=str(r.stdout).splitlines()[4].strip().split('=')[1]
