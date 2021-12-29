@@ -151,8 +151,13 @@ def getrpiinfo(dictionary=True, df={} ):
         df['memtotal']=int(str(f.readline()).strip().split()[1])//1000
         df['memfree']=int(str(f.readline()).strip().split()[1])//1000
         df['memavaiable']=int(str(f.readline()).strip().split()[1])//1000
-    essid=str(subprocess.check_output(['iwgetid'] ), encoding='utf-8').strip().split()[1]
-    df['essid']=essid.split(':')[1].replace('"','')
+    r = subprocess.run(['iwgetid'], capture_output=True, encoding='utf-8')
+    if r.returncode==0:
+        essid=str(r.stdout).strip().split()[1]
+        df['essid']=essid.split(':')[1].replace('"','')
+    else:
+        df['essid']='- link down -'    
+    
     df['coretemp']=gettemp()
     # static
     if newdata:
