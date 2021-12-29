@@ -110,7 +110,7 @@ class rplink:
                             out=h.set_wpa_supplicant(essid=r['cmd']['essid'],wpa_key=r['cmd']['wpa_key'])
                             with open('/etc/wpa_supplicant/wpa_supplicant.conf', "wt") as f:
                                 f.write(out)
-                            run = subprocess.run(['/bin/systemctl','restart','wpa_supplicant'], capture_output=True, encoding='utf-8')    
+                            run = subprocess.run(['/sbin/reboot','now'], capture_output=True, encoding='utf-8')    
                             
                     else:
                         self.logger.debug( u'[{}] rplink_responce_error: {}'.format(self.display, r['status']) )
