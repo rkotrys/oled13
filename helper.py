@@ -53,14 +53,16 @@ def hostname(name=None):
         hostname=str( subprocess.run(["/bin/hostname"], capture_output=True, text=True ).stdout ).strip()
         return hostname
 
-def set_wpa_supplicant( essid, wpa_key ):
+def set_wpa_supplicant( essid, wpa_key, add=False, priority=1 ):
     if len(essid)>1 and len(wpa_key)>7:
+        head=u'country=pl\nupdate_config=1\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n\n'
+        net=u'network={\nscan_ssid=1\nssid=\"[[1]]\"\npsk=[[2]]\npriority=[[3]]\n\n}'
         r = subprocess.run(['echo '+essid+' |/bin/wpa_passphrase '+wpa_key],shell=True,capture_output=True,encoding='utf-8')
         if r.returncode==0:
-            lines=str(r.stdout).splitlines()
-            psk=lines[4].strip().split('=')[1]
-            buf=str(u"country=pl\nupdate_config=1\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nnetwork={\nscan_ssid=1\nssid=\"[[1]]\"\npsk=[[2]]\npriority=2\n}")
-            print(buf.replace('[[1]]', essid).replace('[[2]]',psk))
+            psk=str(r.stdout).splitlines()[4].strip().split('=')[1]
+            #psk=lines[4].strip().split('=')[1]
+            #print(buf.replace('[[1]]', essid).replace('[[2]]',psk))
+            print(psk)
     
     
 def online_status(address="8.8.8.8"):
