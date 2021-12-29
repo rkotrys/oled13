@@ -54,7 +54,13 @@ def hostname(name=None):
         return hostname
 
 def set_wpa_supplicant( essid, wpa_key ):
-    pass
+    if len(essid)>1 and len(wpa_key)>7:
+        r = subprocess.run(['echo '+essid+' |/bin/wpa_passphrase '+wpa_key],shell=True,capture_output=True,encoding='utf-8')
+        if r.returncode==0:
+            lines=str(r.stdout).splitlines()
+            psk=lines[4].strip()
+            print( psk )
+    
     
 def online_status(address="8.8.8.8"):
     """ check on-line status od 'address' host with ping command """
