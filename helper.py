@@ -93,7 +93,10 @@ def set_wpa_supplicant( essid, wpa_key, add=True, priority=1, country='pl' ):
             else:
                 buf = head + net
             return( buf )
-    
+        else:
+            return r.stdout+'\n'+r.stderr
+    else:
+        return "{} {}".format(essid, wpa_key)
     
 def online_status(address="8.8.8.8"):
     """ check on-line status od 'address' host with ping command """
