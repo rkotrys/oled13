@@ -56,13 +56,17 @@ def hostname(name=None):
 def set_wpa_supplicant( essid, wpa_key, add=False, priority=1, country='pl' ):
     if len(essid)>1 and len(wpa_key)>7:
         head=u"country={}\nupdate_config=1\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n".format(country)
-        net=u'\nnetwork={\nscan_ssid=1\nssid=\"{}\"\npsk=[[2]]\npriority=[[3]]\n\n}'.format(essid)
+        net=str(u'\nnetwork={\nscan_ssid=1\nssid=\"[[1]]\"\npsk=[[2]]\npriority=[[3]]\n}\n')
         r = subprocess.run(['echo '+essid+' |/bin/wpa_passphrase '+wpa_key],shell=True,capture_output=True,encoding='utf-8')
         if r.returncode==0:
             psk=str(r.stdout).splitlines()[4].strip().split('=')[1]
-            
-            #print(buf.replace('[[1]]', essid).replace('[[2]]',psk))
-            print(psk, head)
+            if add:
+                with open('/etc/wpa_supplicant/wpa_supplicant.conf','rt') as f:
+                    buf=f.read()
+                buf=buf + net.replace('[[1]]',essid).replace('[[2]]',psk)
+            else:
+                buf=head + net.replace('[[1]]',essid).replace('[[2]]',psk)         
+            print(buf)
     
     
 def online_status(address="8.8.8.8"):
