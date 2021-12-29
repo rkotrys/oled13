@@ -62,7 +62,7 @@ def find_net(buf):
         net=False
     if net!=False:
         start=str(net).find('ssid="')+len('ssid="')
-        stop=str(net).find('"')
+        stop=str(net[start:]).find('"')
         ssid=net[start:stop]    
     return (net, ssid)        
 
