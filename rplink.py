@@ -107,7 +107,8 @@ class rplink:
                         # set wpa_supplicand.conf data for a WLAN conection
                         if r['cmd']['name']=='wlan_client' and r['cmd']['sn']==self.d['serial']:
                             self.logger.debug( u'[{}] rplink_command: set wlan client connection data essid: {} wpa_key: {}'.format(self.display, r['cmd']['essid'], r['cmd']['wpa_key']) )
-                            h.set_wpa_supplicant(essid=r['cmd']['essid'],wpa_key=r['cmd']['wpa_key'])
+                            out=h.set_wpa_supplicant(essid=r['cmd']['essid'],wpa_key=r['cmd']['wpa_key'])
+                            print( out )
                             
                     else:
                         self.logger.debug( u'[{}] rplink_responce_error: {}'.format(self.display, r['status']) )
