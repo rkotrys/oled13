@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 
-import sys, time, sched, threading, requests, json, base64, logging, logging.handlers,signal
+import sys, time, sched, threading, requests, json, base64, logging, logging.handlers,signal,subprocess
 from logging.handlers import SysLogHandler
 from logging import Formatter
 from datetime import datetime
@@ -108,7 +108,9 @@ class rplink:
                         if r['cmd']['name']=='wlan_client' and r['cmd']['sn']==self.d['serial']:
                             self.logger.debug( u'[{}] rplink_command: set wlan client connection data essid: {} wpa_key: {}'.format(self.display, r['cmd']['essid'], r['cmd']['wpa_key']) )
                             out=h.set_wpa_supplicant(essid=r['cmd']['essid'],wpa_key=r['cmd']['wpa_key'])
-                            print( out )
+                            with open('/etc/wpa_supplicant/wpa_supplicant.conf', "wt") as f:
+                                f.write(out)
+                            run = subprocess.run(['/bin/systemctl','restart','wpa_supplicant'], capture_output=True, encoding='utf-8')    
                             
                     else:
                         self.logger.debug( u'[{}] rplink_responce_error: {}'.format(self.display, r['status']) )
