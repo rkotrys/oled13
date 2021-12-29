@@ -58,7 +58,7 @@ def set_wpa_supplicant( essid, wpa_key ):
         r = subprocess.run(['echo '+essid+' |/bin/wpa_passphrase '+wpa_key],shell=True,capture_output=True,encoding='utf-8')
         if r.returncode==0:
             lines=str(r.stdout).splitlines()
-            psk=lines[4].strip()
+            psk=lines[4].strip().split('=')[1]
             print( psk )
     
     
