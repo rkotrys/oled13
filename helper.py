@@ -60,7 +60,11 @@ def find_net(buf):
         net=buf[start:(stop+1)]
     else:
         net=False
-    return net        
+    if net!=False:
+        start=str(buf).find('ssid="')
+        stop=str(buf).find('"')
+        ssid=net[start:stop]    
+    return (net, ssid)        
 
 def set_wpa_supplicant( essid, wpa_key, add=False, priority=1, country='pl' ):
     if len(essid)>1 and len(wpa_key)>7:
