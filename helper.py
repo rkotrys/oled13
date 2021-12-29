@@ -71,7 +71,7 @@ def set_wpa_supplicant( essid, wpa_key, add=True, priority=1, country='pl' ):
     if len(essid)>1 and len(wpa_key)>7:
         head=u"country={}\nupdate_config=1\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n".format(country)
         net=str(u'\nnetwork={\nscan_ssid=1\nssid=\"[[1]]\"\npsk=[[2]]\npriority=[[3]]\n}\n')
-        r = subprocess.run(['echo '+essid+' |/bin/wpa_passphrase '+str(wpa_key)+' ' ],shell=True,capture_output=True,encoding='utf-8')
+        r = subprocess.run(['echo '+str(wpa_key)+' |/bin/wpa_passphrase '+str(essid) ],shell=True,capture_output=True,encoding='utf-8')
         if r.returncode==0:
             psk=str(r.stdout).splitlines()[4].strip().split('=')[1]
             net=net.replace( '[[1]]', essid ).replace( '[[2]]', psk) .replace( '[[3]]', str(priority) )
