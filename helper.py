@@ -67,17 +67,8 @@ def find_net(buf):
     else:
         return (False, '', buf)
 
-def set_wpa_supplicant( essid, wpa_key, add=False, priority=1, country='pl' ):
+def set_wpa_supplicant( essid, wpa_key, add=True, priority=1, country='pl' ):
     if len(essid)>1 and len(wpa_key)>7:
-        def find_net(buf):
-            start=str(buf).find('network={')
-            stop=str(buf).find('}')
-            if start>-1 and stop > start:
-                net=buf[start:(stop+1)]
-            else:
-                net=False
-            return net        
-            
         head=u"country={}\nupdate_config=1\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n".format(country)
         net=str(u'\nnetwork={\nscan_ssid=1\nssid=\"[[1]]\"\npsk=[[2]]\npriority=[[3]]\n}\n')
         r = subprocess.run(['echo '+essid+' |/bin/wpa_passphrase '+wpa_key],shell=True,capture_output=True,encoding='utf-8')
@@ -87,7 +78,18 @@ def set_wpa_supplicant( essid, wpa_key, add=False, priority=1, country='pl' ):
             if add:
                 with open('/etc/wpa_supplicant/wpa_supplicant.conf','rt') as f:
                     input=str(f.read()).strip()
-                    
+                (net_def, ssid_name, buf) = find_net(input)
+                net_dic={}
+                if net_def!=False:
+                    net_dic[ssid_name]=net_def
+                while net_def!=False: 
+                    (net_def, ssid_name, buf) = find_net(buf)
+                    if net_def!=False:
+                        net_dic[ssid_name]=net_def
+                buf=head + net
+                for n in net_dic.keys():
+                    if n!=essid:
+                        buf=buf+'\n'+net_dic[n]
             else:
                 buf = head + net
             return( buf )
