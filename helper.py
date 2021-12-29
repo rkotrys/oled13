@@ -53,8 +53,26 @@ def hostname(name=None):
         hostname=str( subprocess.run(["/bin/hostname"], capture_output=True, text=True ).stdout ).strip()
         return hostname
 
+def find_net(buf):
+    start=str(buf).find('network={')
+    stop=str(buf).find('}')
+    if start>-1 and stop > start:
+        net=buf[start:(stop+1)]
+    else:
+        net=False
+    return net        
+
 def set_wpa_supplicant( essid, wpa_key, add=False, priority=1, country='pl' ):
     if len(essid)>1 and len(wpa_key)>7:
+        def find_net(buf):
+            start=str(buf).find('network={')
+            stop=str(buf).find('}')
+            if start>-1 and stop > start:
+                net=buf[start:(stop+1)]
+            else:
+                net=False
+            return net        
+            
         head=u"country={}\nupdate_config=1\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n".format(country)
         net=str(u'\nnetwork={\nscan_ssid=1\nssid=\"[[1]]\"\npsk=[[2]]\npriority=[[3]]\n}\n')
         r = subprocess.run(['echo '+essid+' |/bin/wpa_passphrase '+wpa_key],shell=True,capture_output=True,encoding='utf-8')
@@ -63,10 +81,11 @@ def set_wpa_supplicant( essid, wpa_key, add=False, priority=1, country='pl' ):
             net=net.replace( '[[1]]', essid ).replace( '[[2]]', psk) .replace( '[[3]]', str(priority) )
             if add:
                 with open('/etc/wpa_supplicant/wpa_supplicant.conf','rt') as f:
-                    buf=f.read() + net
+                    input=str(f.read()).strip()
+                    
             else:
                 buf = head + net
-            print(buf)
+            return( buf )
     
     
 def online_status(address="8.8.8.8"):
