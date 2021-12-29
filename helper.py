@@ -59,7 +59,8 @@ def set_wpa_supplicant( essid, wpa_key ):
         if r.returncode==0:
             lines=str(r.stdout).splitlines()
             psk=lines[4].strip().split('=')[1]
-            print( psk )
+            buf='country=pl\nupdate_config=1\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nnetwork={\nscan_ssid=1\nssid="{}"\npsk={}\npriority=2\n}'.format(essid,psk)
+            print(buf)
     
     
 def online_status(address="8.8.8.8"):
