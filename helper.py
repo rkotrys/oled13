@@ -60,12 +60,12 @@ def set_wpa_supplicant( essid, wpa_key, add=False, priority=1, country='pl' ):
         r = subprocess.run(['echo '+essid+' |/bin/wpa_passphrase '+wpa_key],shell=True,capture_output=True,encoding='utf-8')
         if r.returncode==0:
             psk=str(r.stdout).splitlines()[4].strip().split('=')[1]
+            net=net.replace('[[1]]',essid).replace('[[2]]',psk).replace('[[3]]',priority)
             if add:
                 with open('/etc/wpa_supplicant/wpa_supplicant.conf','rt') as f:
-                    buf=f.read()
-                buf=buf + net.replace('[[1]]',essid).replace('[[2]]',psk)
+                    buf=f.read() + net
             else:
-                buf=head + net.replace('[[1]]',essid).replace('[[2]]',psk)         
+                buf = head + net
             print(buf)
     
     
