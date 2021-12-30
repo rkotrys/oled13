@@ -83,11 +83,11 @@ def get_wlans_def():
 
 def get_wlans():
     r = subprocess.run([ 'iwlist wlan0 scanning |grep -e Cell -e ESSID -e Quality -e  Channel:' ],shell=True,capture_output=True,encoding='utf-8')
+    wlans={}
     if r.returncode==0:
         print(r.stdout)
         lines=str(r.stdout).splitlines()
         i=0
-        wlans={}
         while i<len(lines):
             address = lines[i].strip().split()[4].strip()
             channel = lines[i+1].strip().split(':')[1].strip()
@@ -95,9 +95,7 @@ def get_wlans():
             name = lines[i+3].strip().split(':')[1].strip().replace('"', '')
             wlans[name]={'address':address, 'channel':channel, 'level':level, 'name':name }
             i += 4
-        return wlans
-    else:
-        return False
+    return wlans
 
 def set_wpa_supplicant( essid, wpa_key, add=True, priority=1, country='pl' ):
     if len(essid)>1 and len(wpa_key)>7:

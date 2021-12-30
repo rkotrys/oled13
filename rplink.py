@@ -33,6 +33,7 @@ class rplink:
         # start
         self.x_checklink = threading.Thread( name='checklink', target=self.checklink, args=(), daemon=True)
         self.x_rpilink = threading.Thread( name='rpilink', target=self.rpilink, args=(), daemon=True)
+        self.x_rpilink = threading.Thread( name='get_wlans', target=self.get_wlans, args=(), daemon=True)
         self.x_checklink.start()
         self.x_rpilink.start()
 
@@ -52,6 +53,13 @@ class rplink:
             self.isonline=h.online_status(address)
             time.sleep(self.rplink_period)
 
+    def get_wlans(self):
+        """ thread """
+        while self.go:
+            time.sleep(1.5)
+            self.scann = h.get_wlans()
+            time.sleep(9.33)
+        
     def rpilink(self):
         """ thread """
         while self.go:
