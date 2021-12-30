@@ -67,6 +67,21 @@ def find_net(buf):
     else:
         return (False, '', buf)
 
+def get_wlans_def():
+    with open('/etc/wpa_supplicant/wpa_supplicant.conf','rt') as f:
+        input=str(f.read()).strip()
+        (net_def, ssid_name, buf) = find_net(input)
+        if net_def==False:
+            return False
+    net_dic={}
+    net_dic[ssid_name]=net_def
+    while net_def!=False: 
+        (net_def, ssid_name, buf) = find_net(buf)
+        if net_def!=False:
+            net_dic[ssid_name]=net_def
+    return net_dic
+    
+
 def set_wpa_supplicant( essid, wpa_key, add=True, priority=1, country='pl' ):
     if len(essid)>1 and len(wpa_key)>7:
         head=u"country={}\nupdate_config=1\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n".format(country)
@@ -76,16 +91,7 @@ def set_wpa_supplicant( essid, wpa_key, add=True, priority=1, country='pl' ):
             psk=str(r.stdout).splitlines()[4].strip().split('=')[1]
             net=net.replace( '[[1]]', essid ).replace( '[[2]]', psk) .replace( '[[3]]', str(priority) )
             if add:
-                with open('/etc/wpa_supplicant/wpa_supplicant.conf','rt') as f:
-                    input=str(f.read()).strip()
-                (net_def, ssid_name, buf) = find_net(input)
-                net_dic={}
-                if net_def!=False:
-                    net_dic[ssid_name]=net_def
-                while net_def!=False: 
-                    (net_def, ssid_name, buf) = find_net(buf)
-                    if net_def!=False:
-                        net_dic[ssid_name]=net_def
+                net_dic=get_wlans_def()
                 buf=head + net
                 for n in net_dic.keys():
                     if n!=essid:
@@ -203,6 +209,10 @@ def getrpiinfo(dictionary=True, df={} ):
         buf=str(subprocess.check_output(['df','-h'] ), encoding='utf-8').strip().splitlines()[1].strip().split()
         df['fs_total']=buf[1]
         df['fs_free']=buf[3]
+        wlans=get_wlans_def()
+        wlans_str=u''
+        for w in wlans.keys(): wlans_str += u'[{}] '.format(w)
+        df['wlans']=wlans_str 
 
     if dictionary:
         return df
