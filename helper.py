@@ -91,7 +91,7 @@ def get_wlans():
         while i<len(lines):
             address = lines[i].strip().split(':')[1].strip()
             channel = lines[i+1].strip().split(':')[1].strip()
-            level = lines[i+2].strip().split('')[2].split('=').strip()
+            level = lines[i+2].strip().split()[2].split('=').strip()
             name = lines[i+3].strip().split(':')[1].strip().replace('"', '')
             wlans[name]={'address':address, 'channel':channel, 'level':level, 'name':name }
             i += 4
