@@ -211,8 +211,8 @@ def getrpiinfo(dictionary=True, df={} ):
         df['fs_free']=buf[3]
         wlans=get_wlans_def()
         wlans_str=u''
-        for w in wlans.keys(): wlans_str += u'[{}] '.format(w)
-        df['wlans']=wlans_str 
+        for w in wlans.keys(): wlans_str += u'{},'.format(w)
+        df['wlans']=wlans_str[0:len(wlans_str)-1] 
 
     if dictionary:
         return df
