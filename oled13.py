@@ -144,12 +144,12 @@ class oled13:
                 # add online status info
                 if self.rpilink.isonline:
                     icon=self.symbols['off']
-                    if len(self.dw['ip'])>2 and len(self.dw['wip'])>2: 
+                    if len(self.df['ip'])>2 and len(self.df['wip'])>2: 
                         icon=self.symbols['ewconnect']
                     else:
-                        if len(self.dw['ip'])>2 and len(self.dw['wip'])==2:
+                        if len(self.df['ip'])>2 and len(self.df['wip'])==2:
                             icon=self.symbols['econnect']
-                        if len(self.dw['ip'])==2 and len(self.dw['wip'])>2:
+                        if len(self.df['ip'])==2 and len(self.df['wip'])>2:
                             icon=self.symbols['econnect']
                     ic=[icon]
                     ic.insert(1,self.symbols['bt'])               
