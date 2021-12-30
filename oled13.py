@@ -47,6 +47,7 @@ class oled13:
         self.font = ImageFont.truetype('fonts/cour.ttf', 26)
         self.font10 = ImageFont.truetype('fonts/cour.ttf',11)
         self.icon = ImageFont.truetype('fonts/segmdl2.ttf', 12)
+        self.symbols = {'bt':0xE702,'econnect':0xE839,'wconnect':0xEC3F,'ewconnect':0xEE77,'glob':0xE12B,'htransfer':0xE8AB,'hbtransfer':0xF1CC,'vtransfer':0xE8CB,'ap':0xEC50,'temp':0xE9CA,'off':0xEA39}
         # drowinfo objects
         self.drowinfo=drowinfo(self,self.font10)
         # Set keyboard handler callback
@@ -60,10 +61,16 @@ class oled13:
         self.kbd.sethanddle( 'down', self.down_handle )
         
 
-    def drowicon( self,icon=0xEC44,x=1,y=1,show=False ):
+    def drowicon( self, icon, pos, show=False ):
+        t=u''
+        if isinstance(icon, list):
+            lst=True
+            for c in icon: t+=chr(c)
+        else:
+            t=chr(icon)
         self.lock.acquire()
         draw = ImageDraw.Draw(self.image)
-        draw.text( (x,y), chr(icon), font=self.icon, fill=self.withe)     
+        draw.text( pos, t, font=self.icon, fill=self.withe)     
         if show:
             self.disp.ShowImage(self.disp.getbuffer(self.image))
         self.lock.release()
@@ -136,7 +143,7 @@ class oled13:
                 self.clock()
                 # add online status info
                 if self.rpilink.isonline:
-                    self.drowicon(icon=0xEC3F,x=128-12,y=0)
+                    self.drowicon(icon=[self.symbols['bt'],self.symbols['ewconnect']],pos=(128-24,0) )
             self.show()
         else:  # self.go==False
             self.disp.clear()
