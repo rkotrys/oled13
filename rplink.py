@@ -59,7 +59,7 @@ class rplink:
             if self.isonline:
                 self.d=h.getrpiinfo(self.d)
                 self.n=h.getnetdev()
-                self.setlocaldata( {'msdid':self.d['msdid'], 'essid':self.d['essid'], 'coretemp':self.d['coretemp'], 'memavaiable':self.d['memavaiable'],'cpus':self.d['cpus'],'maxfreq':self.d['maxfreq']} )
+                self.setlocaldata( {'msdid':self.d['msdid'], 'essid':self.d['essid'], 'coretemp':self.d['coretemp'], 'memavaiable':self.d['memavaiable'],'cpus':self.d['cpus'],'maxfreq':self.d['maxfreq'],'minfreq':self.d['minfreq']} )
                 #self.d['theme']= json.dumps({ 'display':self.display, 'localdata':self.localdata }) 
                 self.d['theme']=base64.standard_b64encode( bytes( json.dumps({ 'display':self.display, 'localdata':self.localdata }), 'utf-8' ) )
                 #df['theme']=self.cnf["global"]["theme"]
