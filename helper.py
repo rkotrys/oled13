@@ -85,7 +85,7 @@ def get_wlans():
     r = subprocess.run([ 'iwlist wlan0 scanning |grep -e Cell -e ESSID -e Quality -e  Channel:' ],shell=True,capture_output=True,encoding='utf-8')
     wlans={}
     if r.returncode==0:
-        print(r.stdout)
+        #print(r.stdout)
         lines=str(r.stdout).splitlines()
         i=0
         while i<len(lines):
