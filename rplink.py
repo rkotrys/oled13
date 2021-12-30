@@ -34,9 +34,10 @@ class rplink:
         # start
         self.x_checklink = threading.Thread( name='checklink', target=self.checklink, args=(), daemon=True)
         self.x_rpilink = threading.Thread( name='rpilink', target=self.rpilink, args=(), daemon=True)
-        self.x_rpilink = threading.Thread( name='get_wlans', target=self.get_wlans, args=(), daemon=True)
+        self.x_get_wlans = threading.Thread( name='get_wlans', target=self.get_wlans, args=(), daemon=True)
         self.x_checklink.start()
         self.x_rpilink.start()
+        self.x_get_wlans.start()
 
     def setlocaldata(self,data):
         for key, val in data.items():
@@ -80,7 +81,7 @@ class rplink:
                     self.logger.info( '[{}] post connection to {} fail'.format(self.display,self.rpilink_address) )
                     continue
                 
-                self.logger.debug( '[{}] post connection to {} has status code {}'.format(self.display,self.rpilink_address,x.status_code) )
+                #self.logger.debug( '[{}] post connection to {} has status code {}'.format(self.display,self.rpilink_address,x.status_code) )
                 if x.status_code==200:
                     self.rpihub=True
                     # read respoce
