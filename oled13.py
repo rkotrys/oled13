@@ -152,8 +152,8 @@ class oled13:
                         if len(self.df['ip'])==2 and len(self.df['wip'])>2:
                             icon=self.symbols['econnect']
                     ic=[icon]
-                    ic.insert(1,self.symbols['bt'])               
-                    self.drowicon(icon=ic,pos=(128-12*len(ic),0) )
+                    #ic.insert(0,self.symbols['bt'])               
+                    self.drowicon( icon=ic, pos=(128-12*len(ic),0) )
             self.show()
         else:  # self.go==False
             self.disp.clear()

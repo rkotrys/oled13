@@ -157,10 +157,21 @@ def getrpiinfo(dictionary=True, df={} ):
         df['essid']=essid.split(':')[1].replace('"','')
     else:
         df['essid']='- link down -'    
-    
     df['coretemp']=gettemp()
     # static
     if newdata:
+        r = subprocess.run(['/bin/lscpu'], capture_output=True, encoding='utf-8')
+        if r.returncode==0:
+            lines=str(r.stdout).strip().splitlines()
+            df['cpus']=lines[2].split(':')[1].strip()
+            df['mdl']=lines[9].split(':')[1].strip()
+            df['maxfrq']=lines[11].split(':')[1].strip()
+            df['minfrq']=lines[12].split(':')[1].strip()
+        else:
+            df['cpus']='--'
+            df['mdl']='--'
+            df['maxfrq']='--'
+            df['minfrq']='--'
         with open('/boot/.id','r') as f:
             df['msdid']=str(f.readline()).strip()
         with open('/proc/cpuinfo','r') as f:
