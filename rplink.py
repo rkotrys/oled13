@@ -22,6 +22,7 @@ class rplink:
         self.isonline=False
         self.rpihub=False
         self.goodtime=False
+        self.scan={}
         self.logger = logging.getLogger(self.display)
         self.logger.setLevel( logging.DEBUG )
         self.log_handler = SysLogHandler(facility=SysLogHandler.LOG_DAEMON, address='/dev/log')
@@ -57,7 +58,7 @@ class rplink:
         """ thread """
         while self.go:
             time.sleep(1.5)
-            self.scann = h.get_wlans()
+            self.scan = h.get_wlans()
             time.sleep(9.33)
         
     def rpilink(self):
@@ -68,6 +69,7 @@ class rplink:
                 self.d=h.getrpiinfo(self.d)
                 self.n=h.getnetdev()
                 self.setlocaldata( {'msdid':self.d['msdid'], 'essid':self.d['essid'], 'coretemp':self.d['coretemp'], 'memavaiable':self.d['memavaiable'],'cpus':self.d['cpus'],'maxfreq':self.d['maxfrq'],'minfreq':self.d['minfrq'],'wlans':self.d['wlans']} )
+                self.setlocaldata( {'scan':self.scan} )
                 #self.d['theme']= json.dumps({ 'display':self.display, 'localdata':self.localdata }) 
                 self.d['theme']=base64.standard_b64encode( bytes( json.dumps({ 'display':self.display, 'localdata':self.localdata }), 'utf-8' ) )
                 #df['theme']=self.cnf["global"]["theme"]
