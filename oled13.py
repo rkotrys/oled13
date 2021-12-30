@@ -143,7 +143,17 @@ class oled13:
                 self.clock()
                 # add online status info
                 if self.rpilink.isonline:
-                    self.drowicon(icon=[self.symbols['bt'],self.symbols['ewconnect']],pos=(128-24,0) )
+                    icon=self.symbols['off']
+                    if len(self.dw['ip'])>2 and len(self.dw['wip'])>2: 
+                        icon=self.symbols['ewconnect']
+                    else:
+                        if len(self.dw['ip'])>2 and len(self.dw['wip'])==2:
+                            icon=self.symbols['econnect']
+                        if len(self.dw['ip'])==2 and len(self.dw['wip'])>2:
+                            icon=self.symbols['econnect']
+                    ic=[icon]
+                    ic.insert(1,self.symbols['bt'])               
+                    self.drowicon(icon=ic,pos=(128-12*len(ic),0) )
             self.show()
         else:  # self.go==False
             self.disp.clear()
