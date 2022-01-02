@@ -81,7 +81,7 @@ def get_wlans_def():
             net_dic[ssid_name]=net_def
     return net_dic
 
-def get_wlans(key='level'):
+def get_wlans(sortkey='level'):
     r = subprocess.run([ 'iwlist wlan0 scanning |grep -e Cell -e ESSID -e Quality -e  Channel:' ],shell=True,capture_output=True,encoding='utf-8')
     wlans_dic={}
     wlans=[]
@@ -96,8 +96,11 @@ def get_wlans(key='level'):
             name = lines[i+3].strip().split(':')[1].strip().replace('"', '')
             wlans.append( {'address':address, 'channel':channel, 'level':level, 'name':name } )
             i += 4
-        wlans.sort(key=lambda x:float(x[key]))
+        print(wlans)    
+        wlans.sort(key=lambda x:float(x[sortkey]))
+        print(wlans)
     for item in wlans: wlans_dic[item['name']]=item 
+    print(wlans_dic)
     return wlans_dic
 
 def set_wpa_supplicant( essid, wpa_key, add=True, priority=1, country='pl' ):
