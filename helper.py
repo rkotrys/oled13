@@ -95,6 +95,7 @@ def get_wlans():
             name = lines[i+3].strip().split(':')[1].strip().replace('"', '')
             wlans[name]={'address':address, 'channel':channel, 'level':level, 'name':name }
             i += 4
+            
     return wlans
 
 def set_wpa_supplicant( essid, wpa_key, add=True, priority=1, country='pl' ):

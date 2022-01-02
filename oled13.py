@@ -129,7 +129,13 @@ class oled13:
                 if self.display_state=='status1':
                     content=h.getrpiinfo(False)
                 if self.display_state=='status2':
-                    content="K2 Status"
+                    wlans_str=''
+                    wlans=h.get_wlans()
+                    if len(wlans)>0:
+                        wlans_str = '[WLANS]\n' + u'\n'.join(wlans.keys())
+                    else:
+                        wlans_str = '[WLANS]\nWLANS not found!'    
+                    content=wlans_str
                 if self.display_state=='status3':
                     content="K3 Status"
                 self.status(drowinfo=self.drowinfo, content=content )    
