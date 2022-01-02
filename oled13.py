@@ -129,7 +129,7 @@ class oled13:
                 if self.display_state=='status1':
                     content=h.getrpiinfo(False)
                 if self.display_state=='status2':
-                    wlans_str=u'[{}]\n'.format(len( self.rpilink.scan ))
+                    wlans_str=u'[{}] WLANs\n'.format(len( self.rpilink.scan ))
                     if len(self.rpilink.scan)>0:
                         for it in self.rpilink.scan.keys():
                             wlans_str += u'{} [{}]\n'.format( self.rpilink.scan[it]['name'], self.rpilink.scan[it]['level'] )
