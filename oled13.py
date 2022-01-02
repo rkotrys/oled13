@@ -131,7 +131,8 @@ class oled13:
                 if self.display_state=='status2':
                     wlans_str=u'[{}]\n'.format(len( self.rpilink.scan ))
                     if len(self.rpilink.scan)>0:
-                        wlans_str += u'\n'.join(self.rpilink.scan.keys())
+                        for it in self.rpilink.scan:
+                            wlans_str += u'{} [{}]\n'.format(it['name'],it['level'])
                     else:
                         wlans_str += 'WLANS not found!'    
                     content=wlans_str
