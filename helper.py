@@ -93,7 +93,7 @@ def get_wlans(key='level'):
             channel = lines[i+1].strip().split(':')[1].strip()
             level = lines[i+2].strip().split()[2].split('=')[1].strip()
             name = lines[i+3].strip().split(':')[1].strip().replace('"', '')
-            wlans[name]={'address':address, 'channel':channel, 'level':level, 'name':name }
+            wlans.append( {'address':address, 'channel':channel, 'level':level, 'name':name } )
             i += 4
         wlans.sort(key=lambda x:float(x[key]))
         r={}
