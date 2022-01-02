@@ -130,7 +130,7 @@ class oled13:
                     content=h.getrpiinfo(False)
                 if self.display_state=='status2':
                     wlans=h.get_wlans()
-                    wlans_str=u'['+str(len(wlans))+']\n'
+                    wlans_str=u'[{}]\n'.format(len(wlans))
                     if len(wlans)>0:
                         wlans_str += u'\n'.join(wlans.keys())
                     else:
