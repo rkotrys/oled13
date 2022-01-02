@@ -97,7 +97,7 @@ def get_wlans(sortkey='level'):
             wlans.append( {'address':address, 'channel':channel, 'level':level, 'name':name } )
             i += 4
         print(wlans)    
-        wlans.sort(key=lambda x:float(x[sortkey]))
+        wlans.sort(reverse=True, key=lambda x:float(x[sortkey]))
         print(wlans)
     for item in wlans: wlans_dic[item['name']]=item 
     print(wlans_dic)
