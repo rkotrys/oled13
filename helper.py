@@ -96,9 +96,9 @@ def get_wlans(key='level'):
             wlans.append( {'address':address, 'channel':channel, 'level':level, 'name':name } )
             i += 4
         wlans.sort(key=lambda x:float(x[key]))
-        r={}
-        for item in wlans: r[item['name']]=item
-    return r
+        wlans_dic={}
+        for item in wlans: wlans_dic[item['name']]=item
+    return wlans_dic
 
 def set_wpa_supplicant( essid, wpa_key, add=True, priority=1, country='pl' ):
     if len(essid)>1 and len(wpa_key)>7:
