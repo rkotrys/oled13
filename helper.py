@@ -83,6 +83,7 @@ def get_wlans_def():
 
 def get_wlans(key='level'):
     r = subprocess.run([ 'iwlist wlan0 scanning |grep -e Cell -e ESSID -e Quality -e  Channel:' ],shell=True,capture_output=True,encoding='utf-8')
+    wlans_dic={}
     wlans=[]
     if r.returncode==0:
         #print(r.stdout)
@@ -96,7 +97,6 @@ def get_wlans(key='level'):
             wlans.append( {'address':address, 'channel':channel, 'level':level, 'name':name } )
             i += 4
         wlans.sort(key=lambda x:float(x[key]))
-        wlans_dic={}
         for item in wlans: wlans_dic[item['name']]=item
     return wlans_dic
 
