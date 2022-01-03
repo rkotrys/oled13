@@ -90,6 +90,7 @@ def get_wlans(sortkey='level'):
         lines=str(r.stdout).splitlines()
         i=0
         while i<len(lines):
+            print(i,lines[i])
             address = lines[i].strip().split()[4].strip()
             channel = lines[i+1].strip().split(':')[1].strip()
             level = lines[i+2].strip().split()[2].split('=')[1].strip()
