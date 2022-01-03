@@ -235,6 +235,9 @@ def getrpiinfo(dictionary=True, df={} ):
     if dictionary:
         return df
     else:
+        return rpiinfo_str( df )
+    
+def rpiinfo_str( df ):
         buf=""
         buf = buf + u"{}\n".format(df['model'])
         buf = buf + u"host: {}\n".format(df['hostname'])
@@ -259,5 +262,4 @@ def getrpiinfo(dictionary=True, df={} ):
                 continue
             buf = buf + u"{}: {}\n".format(key,value)
         return buf
-    
     

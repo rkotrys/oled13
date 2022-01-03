@@ -127,7 +127,7 @@ class oled13:
             self.s.enter(1, 1, self.loop ) 
             if self.display_state in ['status1', 'status2', 'status3']:
                 if self.display_state=='status1':
-                    content=h.getrpiinfo(False)
+                    content=h.rpiinfo_str( self.rpilink.d )
                 if self.display_state=='status2':
                     wlans_str=u'[{}] WLANs\n'.format(len( self.rpilink.scan ))
                     if len(self.rpilink.scan)>0:
