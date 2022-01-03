@@ -175,12 +175,17 @@ def getrpiinfo(dictionary=True, df={} ):
         df['memtotal']=int(str(f.readline()).strip().split()[1])//1000
         df['memfree']=int(str(f.readline()).strip().split()[1])//1000
         df['memavaiable']=int(str(f.readline()).strip().split()[1])//1000
-    r = subprocess.run(['iwgetid'], capture_output=True, encoding='utf-8')
+    r = subprocess.run(['iwgetid', '-r'], capture_output=True, encoding='utf-8')
+    ra = subprocess.run(['iwgetid', '-ra'], capture_output=True, encoding='utf-8')
+    rc = subprocess.run(['iwgetid', '-rc'], capture_output=True, encoding='utf-8')
     if r.returncode==0:
-        essid=str(r.stdout).strip().split()[1]
-        df['essid']=essid.split(':')[1].replace('"','')
+        df['essid']   = str(r.stdout).strip()
+        df['wlan_id'] = str(ra.stdout).strip()
+        df['wlan_ch'] = str(rc.stdout).strip()
     else:
-        df['essid']='- link down -'    
+        df['essid']   = '--'    
+        df['wlan_id'] = '--'
+        df['wlan_ch'] = '--'
     df['coretemp']=gettemp()
     # static
     if newdata:
