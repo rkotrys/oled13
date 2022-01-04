@@ -155,9 +155,12 @@ def main():
             time.sleep(1)
     
     except IOError as e:
+        rpl.logger.debug( u'[{}] detect IOError {}'.format(rpl.display, e) )
         print(e)
         
     except KeyboardInterrupt:    
+        rpl.logger.debug( u'[{}] exit by KeyboardInterrupt {}'.format(rpl.display) )
+        time.sleep(3)
         sys.exit( 0 )    
 
 
