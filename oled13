@@ -4,4 +4,4 @@
 #
 #/root/config/settime.sh
 cd /root/oled13
-/bin/python3 oled13.py
+/bin/python3 oled13.py rpi.ontime24.pl
