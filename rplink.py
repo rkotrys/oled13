@@ -143,7 +143,7 @@ rpl=None
 def main():
     global rpl
     link_address=sys.argv[1] if len(sys.argv)>1 else 'rpi.ontime24.pl'
-    link_period=sys.argv[2] if len(sys.argv)>2 else 1
+    link_period=int(sys.argv[2]) if len(sys.argv)>2 else 1
     local_data={ 'theme': 'headless' }
     try:
         signal.signal(signal.SIGINT, sigint_handler)
