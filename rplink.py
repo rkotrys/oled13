@@ -145,13 +145,21 @@ def main():
     link_address=sys.argv[1] if len(sys.argv)>1 else 'rpi.ontime24.pl'
     link_period=sys.argv[2] if len(sys.argv)>2 else 1
     local_data={ 'theme': 'headless' }
-    signal.signal(signal.SIGINT, sigint_handler)
-    signal.signal(signal.SIGTERM, sigterm_handler)
-    signal.signal(signal.SIGHUP, sighup_handler)
-    rpl = rplink(display='solo',rpilink_address=link_address,rpilink_period=link_period, localdata=local_data)
+    try:
+        signal.signal(signal.SIGINT, sigint_handler)
+        signal.signal(signal.SIGTERM, sigterm_handler)
+        signal.signal(signal.SIGHUP, sighup_handler)
+        rpl = rplink(display='solo',rpilink_address=link_address,rpilink_period=link_period, localdata=local_data)
+        
+        while rpl.go:
+            time.sleep(1)
     
-    while rpl.go:
-        time.sleep(1)
+    except IOError as e:
+        print(e)
+        
+    except KeyboardInterrupt:    
+        sys.exit( 0 )    
+
 
 def sigint_handler(signum, frame):
     global rpl
