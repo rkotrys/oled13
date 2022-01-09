@@ -1,5 +1,17 @@
 # -*- coding:utf-8 -*-
 #import SH1106
+
+# /*****************************************************************************
+# * | File        :	  Kbd.py
+# * | Author      :   Robert Kotrys
+# * | Function    :   Basic class to use with Raspberry Pi keyboard hat
+# * | Info        :   require files: SH1106.py, config.py
+# *----------------
+# * | This version:   V1.0
+# * | Date        :   2022-01-09
+# * | Info        :   required by 'oled13.py'
+# ******************************************************************************/
+
 import time, datetime, config
 import threading
 import subprocess as proc

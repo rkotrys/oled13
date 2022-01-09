@@ -1,6 +1,17 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
+# /*****************************************************************************
+# * | File        :	  rplink.py
+# * | Author      :   Robert Kotrys
+# * | Function    :   Basic class to use with Raspberry Pi link service
+# * | Info        :   require files: helper.py
+# *----------------
+# * | This version:   V1.0
+# * | Date        :   2022-01-09
+# * | Info        :   include 'rplink' run file and 'rplink.service'
+# ******************************************************************************/
+
 
 import sys, time, sched, threading, requests, json, base64, logging, logging.handlers,signal,subprocess
 from logging.handlers import SysLogHandler

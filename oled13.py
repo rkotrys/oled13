@@ -48,7 +48,7 @@ class oled13:
         # dev info
         self.df=h.getrpiinfo()
         self.netdev=h.getnetdev()
-        self.rpilink.setlocaldata( { 'msdid':self.df['msdid'], 'essid':self.df['essid'], 'coretemp':self.df['coretemp'], 'memavaiable':self.df['memavaiable']} )
+        self.rpilink.setlocaldata( { 'msdid':self.df['msdid'], 'essid':self.df['essid'], 'coretemp':self.df['coretemp'], 'memavaiable':self.df['memavaiable'],'netdev':self.netdev} )
         # Initialize and clean the display.
         self.disp.Init()
         self.disp.clear()
@@ -88,6 +88,7 @@ class oled13:
         self.lock.release()
             
     def clock( self ):
+        """ drow clock face, style: digital """
         #print( "oled13.clock():\n")
         image = Image.new('1', (self.disp.width, self.disp.height), "WHITE")
         draw = ImageDraw.Draw(image)
@@ -107,7 +108,7 @@ class oled13:
     def status( self, content=" - Status -", drowinfo=None ):
         """ 
             status( self, content=" ", drowinfo=None, mode=True )
-            content = list od str or multiline text to display
+            content = list of str or multiline text to display
             drowinfo = instance of 'drowinfo' class
         """
         if self.display_timeout==self.display_timeout_d:

@@ -1,6 +1,17 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
+# /*****************************************************************************
+# * | File        :	  helper.py
+# * | Author      :   Robert Kotrys
+# * | Function    :   Basic functions to use with Raspberry Pi devives
+# * | Info        :
+# *----------------
+# * | This version:   V1.0
+# * | Date        :   2022-01-09
+# * | Info        :   
+# ******************************************************************************/
+
 import subprocess
 
 def getip():
