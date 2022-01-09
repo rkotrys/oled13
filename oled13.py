@@ -1,6 +1,18 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
+# /*****************************************************************************
+# * | File        :	  oled13.py
+# * | Author      :   Robert Kotrys
+# * | Function    :   Basic class to use with Raspberry Pi 128x64 1.3' mono oled hat
+# * | Info        :   require files: SH1106.py, config.py, Kbd.py, helper.py, rplink.py
+# *----------------
+# * | This version:   V1.0
+# * | Date        :   2022-01-09
+# * | Info        :   include 'oled13' run file and 'oled13.service'
+# ******************************************************************************/
+
+
 import time, sched, threading, sys, signal
 from datetime import datetime
 from PIL import Image,ImageDraw,ImageFont
