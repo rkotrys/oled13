@@ -37,6 +37,8 @@ class oled13:
         # rpilink object
         self.rpilink=rplink(display='oled13', rpilink_address=rpilink_address, rpilink_period=2)
         self.rpilink.setlocaldata( {'theme':'mono'} )
+        # menu object
+        self.menu=menu(self)
         # display state
         self.display_state=''
         self.display_timeout=10
