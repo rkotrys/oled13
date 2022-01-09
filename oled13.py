@@ -178,6 +178,14 @@ class oled13:
                         #ic.insert(0,self.symbols['bt'])               
                         self.drowicon( icon=ic, pos=(128-12*len(ic),0) )
                 self.show()
+            else:
+                if self.display_timeout > 0:
+                    self.display_timeout=self.display_timeout-1
+                else:
+                    self.display_state=''
+                    self.display_timeout=self.display_timeout_d
+                    self.menu.deactivate()
+                    
         else:  # self.go==False
             self.disp.clear()
             self.disp.reset()
