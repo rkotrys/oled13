@@ -216,9 +216,9 @@ class oled13:
 
     def enter_handle(self,name,state):
         if state=='Down':
-            self.go=False
-        print( u'enter_handle: {} is {}'.format( name, state ) )
-        print( u'exit!' )
+            #self.go=False
+            print( u'enter_handle: {} is {}'.format( name, state ) )
+            #print( u'exit!' )
 
     def right_handle(self,name,state):
         if state=='Down':
@@ -236,6 +236,7 @@ class oled13:
         if state=='Down':
             print( u'down_handle: {} is {}'.format( name, state ) )    
         
+
 
 class drowinfo:
     def __init__(self, oled, font=None ):
