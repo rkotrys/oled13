@@ -13,7 +13,7 @@
 # ******************************************************************************/
 
 
-import time, sched, threading, sys, signal
+import time, sched, threading, sys, signal, json
 from datetime import datetime
 from PIL import Image,ImageDraw,ImageFont
 import subprocess as proc
@@ -27,6 +27,7 @@ class oled13:
     def __init__(self, rpilink_address='rpi.ontime24.pl'):
         # run flag
         self.go=True
+        self.hold=False
         # sheduler
         self.s = sched.scheduler(time.time, time.sleep)
         # OLED 1.3' display driver
@@ -135,45 +136,49 @@ class oled13:
         self.s.run()
         
     def loop(self):
-        if self.go:    
-            #print( "oled13.loop():\n")
-            self.s.enter(1, 1, self.loop ) 
-            if self.display_state in ['status1', 'status2', 'status3']:
-                if self.display_state=='status1':
-                    content=h.rpiinfo_str( self.rpilink.d )
-                if self.display_state=='status2':
-                    wlans_str=u'[{}] WLANs\n'.format(len( self.rpilink.scan ))
-                    if len(self.rpilink.scan)>0:
-                        for it in self.rpilink.scan.keys():
-                            wlans_str += u'{} [{}]\n'.format( self.rpilink.scan[it]['name'], self.rpilink.scan[it]['level'] )
+        if self.go :
+            if not self.hold:    
+                #print( "oled13.loop():\n")
+                self.s.enter(1, 1, self.loop ) 
+                if self.display_state in ['status1', 'status2', 'status3', 'menu']:
+                    if self.display_state=='status1':
+                        content=h.rpiinfo_str( self.rpilink.d )
+                    if self.display_state=='status2':
+                        wlans_str=u'[{}] WLANs\n'.format(len( self.rpilink.scan ))
+                        if len(self.rpilink.scan)>0:
+                            for it in self.rpilink.scan.keys():
+                                wlans_str += u'{} [{}]\n'.format( self.rpilink.scan[it]['name'], self.rpilink.scan[it]['level'] )
+                        else:
+                            wlans_str += 'WLANS not found!'    
+                        content=wlans_str
+                    if self.display_state=='status3':
+                        content="K3 Status"
+                    if self.display_state=='menu':
+                        """ activate menu """
+                        pass
+                    self.status(drowinfo=self.drowinfo, content=content )    
+                    if self.display_timeout > 0:
+                        self.display_timeout=self.display_timeout-1
                     else:
-                        wlans_str += 'WLANS not found!'    
-                    content=wlans_str
-                if self.display_state=='status3':
-                    content="K3 Status"
-                self.status(drowinfo=self.drowinfo, content=content )    
-                if self.display_timeout > 0:
-                    self.display_timeout=self.display_timeout-1
-                else:
-                    self.display_state=''
-                    self.display_timeout=self.display_timeout_d
-            # clock() is the default    
-            if self.display_state=='':         
-                self.clock()
-                # add online status info
-                if self.rpilink.isonline:
-                    icon=self.symbols['off']
-                    if len(self.df['ip'])>2 and len(self.df['wip'])>2: 
-                        icon=self.symbols['ewconnect']
-                    else:
-                        if len(self.df['ip'])>2 and len(self.df['wip'])==2:
-                            icon=self.symbols['econnect']
-                        if len(self.df['ip'])==2 and len(self.df['wip'])>2:
-                            icon=self.symbols['wconnect']
-                    ic=[icon]
-                    #ic.insert(0,self.symbols['bt'])               
-                    self.drowicon( icon=ic, pos=(128-12*len(ic),0) )
-            self.show()
+                        self.display_state=''
+                        self.display_timeout=self.display_timeout_d
+                # clock() is the default    
+                if self.display_state=='':         
+                    self.clock()
+                    # add online status info
+                    if self.rpilink.isonline:
+                        icon=self.symbols['off']
+                        if len(self.df['ip'])>2 and len(self.df['wip'])>2: 
+                            icon=self.symbols['ewconnect']
+                        else:
+                            if len(self.df['ip'])>2 and len(self.df['wip'])==2:
+                                icon=self.symbols['econnect']
+                            if len(self.df['ip'])==2 and len(self.df['wip'])>2:
+                                icon=self.symbols['wconnect']
+                        ic=[icon]
+                        #ic.insert(0,self.symbols['bt'])               
+                        self.drowicon( icon=ic, pos=(128-12*len(ic),0) )
+                self.show()
         else:  # self.go==False
             self.disp.clear()
             self.disp.reset()
@@ -236,11 +241,91 @@ class oled13:
         if state=='Down':
             print( u'down_handle: {} is {}'.format( name, state ) )    
         
+class menu:
+    def __init__(self,oled,font=None):
+        """ oled is reference to display instance """
+        self.oled=oled
+        if font!=None:
+            self.font=font
+        else:
+            self.font=ImageFont.truetype('fonts/cour.ttf',11)
+        self.menu = [{"text":"MENU\n0","type":"t","cmd":"echo m0"},{"text":"MENU\n1","type":"t","cmd":"echo m1"},{"text":"MENU\n2","type":"t","cmd":"echo m2"}]
+        self.vspace=1
+        self.pos=0
+        
+    def activate(self):
+        self.pos=0
+        self.oled.hold=True
+        self.oled.kbd.sethanddle( 'enter', self.enter_handle )
+        self.oled.kbd.sethanddle( 'right', self.right_handle )
+        self.oled.kbd.sethanddle( 'left', self.left_handle )
+        self.oled.kbd.sethanddle( 'up', self.up_handle )
+        self.oled.kbd.sethanddle( 'down', self.down_handle )
+        self.show( self.drow() )
+    
+    def deactivate(self):
+        self.oled.kbd.sethanddle( 'enter', self.oled.enter_handle )
+        self.oled.kbd.sethanddle( 'right', self.oled.right_handle )
+        self.oled.kbd.sethanddle( 'left', self.oled.left_handle )
+        self.oled.kbd.sethanddle( 'up', self.oled.up_handle )
+        self.oled.kbd.sethanddle( 'down', self.oled.down_handle )
+        self.oled.hold=False
+    
+    def show(self, image):
+        self.oled.image=image
+        self.oled.show()
+            
+    def drow(self,text=None):
+        """ drowinfo class - display multilnies 'content' in OLED screen """
+        image = Image.new('1', (self.oled.disp.width, self.oled.disp.height), "WHITE")
+        draw = ImageDraw.Draw(image)
+        buf = self.menu[self.pos]["text"] if text==None else text
+        (sx,sy)=self.font.getsize(buf)
+        draw.multiline_text( ( (128-sx)//2, (64-sy)//2  ), buf, font=self.font, spacing=self.vspace, fill = 0 )
+        return image
 
+    def enter_handle(self,name,state):
+        if state=='Down':
+            self.show(self.drow('[ENTER] '+self.menu[self.pos]['todo']))
+            # exec the command
+            time.sleep(3)
+            self.deactivate()
+            #print( u'[MENU] enter_handle: {} is {}'.format( name, state ) )
+            #print( u'exit!' )
+
+    def right_handle(self,name,state):
+        if state=='Down':
+            print( u'[MENU] rght_handle: {} is {}'.format( name, state ) )    
+
+    def left_handle(self,name,state):
+        if state=='Down':
+            print( u'[MENU] left_handle: {} is {}'.format( name, state ) )    
+        
+    def up_handle(self,name,state):
+        if state=='Down':
+            if self.pos  > 0:
+                self.pos=self.pos-1
+            self.oled.display_timeout=self.oled.display_timeout_d
+            image=self.drow()
+            self.oled.lock.acquire()
+            self.oled.image = image
+            self.oled.lock.release()
+            self.oled.show()
+        
+    def down_handle(self,name,state):
+        if state=='Down':
+            if self.pos < (len(self.menu)-1):
+                self.pos=self.pos+1
+            self.oled.display_timeout=self.oled.display_timeout_d
+            self.oled.lock.acquire()
+            self.oled.image = self.drow()
+            self.oled.lock.release()
+            self.oled.show()
+            
 
 class drowinfo:
     def __init__(self, oled, font=None ):
-        """ clock is reference to 'clock' instance """
+        """ oled is reference to 'oled13' instance """
         self.oled=oled
         if font!=None:
             self.font=font
