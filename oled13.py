@@ -225,6 +225,7 @@ class oled13:
         if state=='Down':
             #self.go=False
             print( u'enter_handle: {} is {}'.format( name, state ) )
+            self.menu.acticate()
             #print( u'exit!' )
 
     def right_handle(self,name,state):
