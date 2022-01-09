@@ -139,9 +139,9 @@ class oled13:
         
     def loop(self):
         if self.go :
+            self.s.enter(1, 1, self.loop ) 
             if not self.hold:    
                 #print( "oled13.loop():\n")
-                self.s.enter(1, 1, self.loop ) 
                 if self.display_state in ['status1', 'status2', 'status3']:
                     if self.display_state=='status1':
                         content=h.rpiinfo_str( self.rpilink.d )
