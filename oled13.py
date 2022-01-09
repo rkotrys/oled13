@@ -142,7 +142,7 @@ class oled13:
             if not self.hold:    
                 #print( "oled13.loop():\n")
                 self.s.enter(1, 1, self.loop ) 
-                if self.display_state in ['status1', 'status2', 'status3', 'menu']:
+                if self.display_state in ['status1', 'status2', 'status3']:
                     if self.display_state=='status1':
                         content=h.rpiinfo_str( self.rpilink.d )
                     if self.display_state=='status2':
@@ -155,9 +155,6 @@ class oled13:
                         content=wlans_str
                     if self.display_state=='status3':
                         content="K3 Status"
-                    if self.display_state=='menu':
-                        """ activate menu """
-                        pass
                     self.status(drowinfo=self.drowinfo, content=content )    
                     if self.display_timeout > 0:
                         self.display_timeout=self.display_timeout-1
