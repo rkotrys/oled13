@@ -267,12 +267,13 @@ class menu:
         self.show( self.drow() )
     
     def deactivate(self):
+        self.oled.hold=False
         self.oled.kbd.sethanddle( 'enter', self.oled.enter_handle )
         self.oled.kbd.sethanddle( 'right', self.oled.right_handle )
         self.oled.kbd.sethanddle( 'left', self.oled.left_handle )
         self.oled.kbd.sethanddle( 'up', self.oled.up_handle )
         self.oled.kbd.sethanddle( 'down', self.oled.down_handle )
-        self.oled.hold=False
+        
     
     def show(self, image):
         self.oled.image=image
@@ -293,6 +294,7 @@ class menu:
             # exec the command
             time.sleep(3)
             self.deactivate()
+            time.sleep(1)
             #print( u'[MENU] enter_handle: {} is {}'.format( name, state ) )
             #print( u'exit!' )
 
