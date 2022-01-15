@@ -27,7 +27,7 @@ class menu:
             self.font=font
         else:
             self.font=ImageFont.truetype('fonts/cour.ttf',11)
-        self.font2=ImageFont.truetype('fonts/verdanab.ttf',12)
+        self.font2=ImageFont.truetype('fonts/verdanab.ttf',10)
         self.menu = [] 
         self.vspace=1
         self.size=size
