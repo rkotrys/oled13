@@ -27,13 +27,16 @@ class menu:
             self.font=font
         else:
             self.font=ImageFont.truetype('fonts/cour.ttf',11)
-        self.menu = [{"text":"MENU\n0","type":"t","cmd":"echo m0"},{"text":"MENU\n1","type":"t","cmd":"echo m1"},{"text":"MENU\n2","type":"t","cmd":"echo m2"}]
+        self.menu = [{"text":"MENU 1","type":"t","cmd":"echo m1"},{"text":"MENU 2\nline 2\nline 3","type":"t","cmd":"echo m2"},{"text":"MENU 3","type":"t","cmd":"echo m3"}]
         self.vspace=1
         self.size=size
         self.mode=mode
         self.bgcolor=bgcolor
         self.color=color
         self.pos=0
+        
+    def setmenu(self, menu ):
+        self.menu = menu    
         
     def activate(self):
         self.pos=0
@@ -58,11 +61,11 @@ class menu:
         self.oled.image=image
         self.oled.show()
             
-    def drow(self,text=None):
+    def drow(self,text=None, pos=1):
         """ drowinfo class - display multilnies 'content' in OLED screen """
         image = Image.new(self.mode, self.size, self.bgcolor )
         draw = ImageDraw.Draw(image)
-        buf='MENU: {}'.format(self.pos+1) if text==None else 'MENU'
+        buf='MENU: {}'.format(self.pos+1) if text==None else 'MENU {}'.format(pos)
         (sx,sy)=draw.textsize( buf, font=self.font, spacing=self.vspace )
         header_v=sy+1
         draw.rectangle( [(0,0),(self.size[0]-1,header_v)], fill=self.color, outline=self.bgcolor, width=0 )
@@ -78,7 +81,7 @@ class menu:
 
     def enter_handle(self,name,state):
         if state=='Down':
-            self.show(self.drow('[ENTER] '+self.menu[self.pos]['cmd']))
+            self.show(self.drow('[ENTER] '+self.menu[self.pos]['cmd'], self.pos ))
             # exec the command
             time.sleep(3)
             self.deactivate()
