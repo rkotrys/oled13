@@ -70,7 +70,7 @@ class menu:
         (sx,sy)=draw.textsize( buf, font=self.font2, spacing=self.vspace )
         header_v=sy+1
         draw.rectangle( [(0,0),(self.size[0]-1,header_v)], fill=self.color, outline=self.bgcolor, width=0 )
-        draw.text( (4,0), buf, font=self.font, spacing=self.vspace, fill = self.bgcolor )
+        draw.text( (4,0), buf, font=self.font2, spacing=self.vspace, fill = self.bgcolor )
         buf = self.menu[self.pos]["text"] if text==None else text
         (sx,sy)=draw.multiline_textsize( buf, font=self.font, spacing=self.vspace )
         x=(self.size[0]-sx)//2
