@@ -5,7 +5,8 @@
 # * | File        :	  oled13.py
 # * | Author      :   Robert Kotrys
 # * | Function    :   Basic class to use with Raspberry Pi 128x64 1.3' mono oled hat
-# * | Info        :   require files: SH1106.py, config.py, Kbd.py, helper.py, rplink.py
+# * | Info        :   require files: SH1106.py, config.py, Kbd.py, helper.py,
+# * |             :   rplink.py, menu.py
 # *----------------
 # * | This version:   V1.0
 # * | Date        :   2022-01-09
@@ -40,7 +41,7 @@ class oled13:
         self.rpilink=rplink(display='oled13', rpilink_address=rpilink_address, rpilink_period=2)
         self.rpilink.setlocaldata( {'theme':'mono'} )
         # menu object
-        self.menu=menu(self, font=None, size=(128,64), mode='1', bgcolor=1, color=0)
+        self.menu=menu(self, font=None, size=(self.disp.width,self.disp.height), mode='1', bgcolor=1, color=0)
         # display state
         self.display_state=''
         self.display_timeout=15

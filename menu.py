@@ -62,7 +62,7 @@ class menu:
         """ drowinfo class - display multilnies 'content' in OLED screen """
         image = Image.new(self.mode, self.size, self.bgcolor )
         draw = ImageDraw.Draw(image)
-        buf='MENU:'
+        buf='MENU: {}'.format(self.pos+1) if text==None else 'MENU'
         (sx,sy)=draw.textsize( buf, font=self.font, spacing=self.vspace )
         header_v=sy+1
         draw.rectangle( [(0,0),(self.size[0]-1,header_v)], fill=self.color, outline=self.bgcolor, width=0 )
