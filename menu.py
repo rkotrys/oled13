@@ -5,7 +5,7 @@
 # * | File        :	  menu.py
 # * | Author      :   Robert Kotrys
 # * | Function    :   Basic menu class to use with Raspberry Pi display hat
-# * | Info        :   require files: 
+# * | Info        :   require files: PIL package
 # *----------------
 # * | This version:   V1.0
 # * | Date        :   2022-01-09
