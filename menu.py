@@ -70,10 +70,10 @@ class menu:
         buf = self.menu[self.pos]["text"] if text==None else text
         (sx,sy)=draw.multiline_textsize( buf, font=self.font, spacing=self.vspace )
         x=(self.size[0]-sx)//2
-        y=(self.size[1]-sy)//2
-        draw.rounded_rectangle( [(0,header_v+2),(self.size[0]-1,self.size[1]-1)], radius=4, fill=self.bgcolor, outline=self.color, width=1 )
+        y=((self.size[1]-header_v)-sy)//2
+        draw.rectangle( [(0,header_v+2),(self.size[0]-1,self.size[1]-1)], fill=self.bgcolor, outline=self.color, width=1 )
         #(sx,sy)=self.font.getsize_multiline(buf, spacing=self.vspace )
-        draw.multiline_text( (x,y), buf, font=self.font, spacing=self.vspace, fill = self.color )
+        draw.multiline_text( (x,header_v+y), buf, font=self.font, spacing=self.vspace, fill = self.color )
         return image
 
     def enter_handle(self,name,state):
