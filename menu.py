@@ -60,7 +60,7 @@ class menu:
             
     def drow(self,text=None):
         """ drowinfo class - display multilnies 'content' in OLED screen """
-        image = Image.new(self.mode, self.size, self.color )
+        image = Image.new(self.mode, self.size, self.bgcolor )
         draw = ImageDraw.Draw(image)
         buf = self.menu[self.pos]["text"] if text==None else text
         (sx,sy)=draw.multiline_textsize( buf, font=self.font, spacing=self.vspace )
