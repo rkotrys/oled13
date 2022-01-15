@@ -43,8 +43,8 @@ class oled13:
         self.menu=menu(self, font=None, size=(128,64), mode='1', bgcolor=1, color=0)
         # display state
         self.display_state=''
-        self.display_timeout=10
-        self.display_timeout_d=10
+        self.display_timeout=15
+        self.display_timeout_d=15
         # semafor for save 'image' modifications
         self.lock = threading.Lock()
         # network params
@@ -230,10 +230,10 @@ class oled13:
 
     def enter_handle(self,name,state):
         if state=='Down':
-            #self.go=False
-            print( u'enter_handle: {} is {}'.format( name, state ) )
+            # self.go=False
+            # print( u'enter_handle: {} is {}'.format( name, state ) )
             self.menu.activate()
-            #print( u'exit!' )
+            # print( u'exit!' )
 
     def right_handle(self,name,state):
         if state=='Down':
