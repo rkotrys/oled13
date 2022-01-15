@@ -42,6 +42,7 @@ class oled13:
         self.rpilink.setlocaldata( {'theme':'mono'} )
         # menu object
         self.menu=menu(self, font=None, size=(self.disp.width,self.disp.height), mode='1', bgcolor=1, color=0)
+        self.menu.setmenu([{"text":"MENU 1","type":"t","cmd":"echo m1"},{"text":"MENU 2\nline 2\nline 3","type":"t","cmd":"echo m2"},{"text":"MENU 3","type":"t","cmd":"echo m3"}])
         # display state
         self.display_state=''
         self.display_timeout=15

@@ -27,7 +27,7 @@ class menu:
             self.font=font
         else:
             self.font=ImageFont.truetype('fonts/cour.ttf',11)
-        self.menu = [{"text":"MENU 1","type":"t","cmd":"echo m1"},{"text":"MENU 2\nline 2\nline 3","type":"t","cmd":"echo m2"},{"text":"MENU 3","type":"t","cmd":"echo m3"}]
+        self.menu = [] 
         self.vspace=1
         self.size=size
         self.mode=mode
@@ -86,6 +86,7 @@ class menu:
             time.sleep(3)
             self.deactivate()
             time.sleep(1)
+            self.pos=0
             #print( u'[MENU] enter_handle: {} is {}'.format( name, state ) )
             #print( u'exit!' )
 
