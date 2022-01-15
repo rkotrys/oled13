@@ -27,6 +27,7 @@ class menu:
             self.font=font
         else:
             self.font=ImageFont.truetype('fonts/cour.ttf',11)
+        self.font2=ImageFont.truetype('fonts/verdanab.ttf',11)
         self.menu = [] 
         self.vspace=1
         self.size=size
@@ -66,7 +67,7 @@ class menu:
         image = Image.new(self.mode, self.size, self.bgcolor )
         draw = ImageDraw.Draw(image)
         buf='MENU: {}'.format(self.pos+1) if text==None else 'MENU {}'.format(pos)
-        (sx,sy)=draw.textsize( buf, font=self.font, spacing=self.vspace )
+        (sx,sy)=draw.textsize( buf, font=self.font2, spacing=self.vspace )
         header_v=sy+1
         draw.rectangle( [(0,0),(self.size[0]-1,header_v)], fill=self.color, outline=self.bgcolor, width=0 )
         draw.text( (4,0), buf, font=self.font, spacing=self.vspace, fill = self.bgcolor )
