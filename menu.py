@@ -20,7 +20,7 @@ from PIL import Image,ImageDraw,ImageFont
 
 
 class menu:
-    def __init__(self,oled,font=None, size=(128,64), mode='1', bgcolor="WHITE", color="BLACK" ):
+    def __init__(self,oled,font=None, size=(128,64), mode='1', bgcolor=1, color=0 ):
         """ oled is reference to display instance """
         self.oled=oled
         if font!=None:
@@ -60,7 +60,7 @@ class menu:
             
     def drow(self,text=None):
         """ drowinfo class - display multilnies 'content' in OLED screen """
-        image = Image.new('1', self.size, self.color )
+        image = Image.new(self.mode, self.size, self.color )
         draw = ImageDraw.Draw(image)
         buf = self.menu[self.pos]["text"] if text==None else text
         (sx,sy)=draw.multiline_textsize( buf, font=self.font, spacing=self.vspace )
