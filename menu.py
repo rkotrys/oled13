@@ -66,7 +66,7 @@ class menu:
         (sx,sy)=draw.multiline_textsize( buf, font=self.font, spacing=self.vspace )
         x=(self.size[0]-sx)//2
         y=(self.size[1]-sy)//2
-        draw.rectangle( [(1,y-1),(self.size[0]-1,sy+y+1)], fill=self.bgcolor, outline=self.color, width=1 )
+        draw.rectangle( [(1,y-3),(self.size[0]-1,sy+y+2)], fill=self.bgcolor, outline=self.color, width=1 )
         #(sx,sy)=self.font.getsize_multiline(buf, spacing=self.vspace )
         draw.multiline_text( (x,y), buf, font=self.font, spacing=self.vspace, fill = 0 )
         return image
