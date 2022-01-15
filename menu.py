@@ -81,7 +81,7 @@ class menu:
 
     def enter_handle(self,name,state):
         if state=='Down':
-            self.show(self.drow('[ENTER] '+self.menu[self.pos]['cmd'], self.pos ))
+            self.show(self.drow('[ENTER] '+self.menu[self.pos]['cmd'], self.pos+1 ))
             # exec the command
             time.sleep(3)
             self.deactivate()
