@@ -64,13 +64,14 @@ class menu:
         draw = ImageDraw.Draw(image)
         buf='MENU:'
         (sx,sy)=draw.textsize( buf, font=self.font, spacing=self.vspace )
-        draw.rectangle( [(0,0),(self.size[0]-1,sy+1)], fill=self.color, outline=self.bgcolor, width=0 )
+        header_v=sy+1
+        draw.rectangle( [(0,0),(self.size[0]-1,header_v)], fill=self.color, outline=self.bgcolor, width=0 )
         draw.text( (4,0), buf, font=self.font, spacing=self.vspace, fill = self.bgcolor )
         buf = self.menu[self.pos]["text"] if text==None else text
         (sx,sy)=draw.multiline_textsize( buf, font=self.font, spacing=self.vspace )
         x=(self.size[0]-sx)//2
         y=(self.size[1]-sy)//2
-        draw.rectangle( [(1,y-3),(self.size[0]-1,sy+y+2)], fill=self.bgcolor, outline=self.color, width=1 )
+        draw.rounded_rectangle( [(0,header_v+2),(self.size[0]-1,self.size[1]-1)], radius=4, fill=self.bgcolor, outline=self.color, width=1 )
         #(sx,sy)=self.font.getsize_multiline(buf, spacing=self.vspace )
         draw.multiline_text( (x,y), buf, font=self.font, spacing=self.vspace, fill = self.color )
         return image
