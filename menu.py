@@ -20,7 +20,7 @@ from PIL import Image,ImageDraw,ImageFont
 
 
 class menu:
-    def __init__(self,oled,font=None, size=(128,64), mode=1, bgcolor="WHITE", color="BLACK" ):
+    def __init__(self,oled,font=None, size=(128,64), mode='1', bgcolor="WHITE", color="BLACK" ):
         """ oled is reference to display instance """
         self.oled=oled
         if font!=None:
