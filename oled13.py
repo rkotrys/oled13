@@ -23,6 +23,7 @@ import config
 import helper as h
 from Kbd import Kbd
 from rplink import rplink
+from menu import menu
 
 class oled13:
     def __init__(self, rpilink_address='rpi.ontime24.pl'):
@@ -39,7 +40,7 @@ class oled13:
         self.rpilink=rplink(display='oled13', rpilink_address=rpilink_address, rpilink_period=2)
         self.rpilink.setlocaldata( {'theme':'mono'} )
         # menu object
-        self.menu=menu(self)
+        self.menu=menu(self, font=None, size=(128,64), mode=1, bgcolor="WHITE", color="BLACK")
         # display state
         self.display_state=''
         self.display_timeout=10
@@ -250,89 +251,6 @@ class oled13:
         if state=='Down':
             print( u'down_handle: {} is {}'.format( name, state ) )    
         
-class menu:
-    def __init__(self,oled,font=None):
-        """ oled is reference to display instance """
-        self.oled=oled
-        if font!=None:
-            self.font=font
-        else:
-            self.font=ImageFont.truetype('fonts/cour.ttf',11)
-        self.menu = [{"text":"MENU\n0","type":"t","cmd":"echo m0"},{"text":"MENU\n1","type":"t","cmd":"echo m1"},{"text":"MENU\n2","type":"t","cmd":"echo m2"}]
-        self.vspace=1
-        self.pos=0
-        
-    def activate(self):
-        self.pos=0
-        self.oled.hold=True
-        self.oled.kbd.sethanddle( 'enter', self.enter_handle )
-        self.oled.kbd.sethanddle( 'right', self.right_handle )
-        self.oled.kbd.sethanddle( 'left', self.left_handle )
-        self.oled.kbd.sethanddle( 'up', self.up_handle )
-        self.oled.kbd.sethanddle( 'down', self.down_handle )
-        self.show( self.drow() )
-    
-    def deactivate(self):
-        self.oled.hold=False
-        self.oled.kbd.sethanddle( 'enter', self.oled.enter_handle )
-        self.oled.kbd.sethanddle( 'right', self.oled.right_handle )
-        self.oled.kbd.sethanddle( 'left', self.oled.left_handle )
-        self.oled.kbd.sethanddle( 'up', self.oled.up_handle )
-        self.oled.kbd.sethanddle( 'down', self.oled.down_handle )
-        
-    
-    def show(self, image):
-        self.oled.image=image
-        self.oled.show()
-            
-    def drow(self,text=None):
-        """ drowinfo class - display multilnies 'content' in OLED screen """
-        image = Image.new('1', (self.oled.disp.width, self.oled.disp.height), "WHITE")
-        draw = ImageDraw.Draw(image)
-        buf = self.menu[self.pos]["text"] if text==None else text
-        (sx,sy)=self.font.getsize(buf)
-        draw.multiline_text( ( (128-sx)//2, (64-sy)//2  ), buf, font=self.font, spacing=self.vspace, fill = 0 )
-        return image
-
-    def enter_handle(self,name,state):
-        if state=='Down':
-            self.show(self.drow('[ENTER] '+self.menu[self.pos]['cmd']))
-            # exec the command
-            time.sleep(3)
-            self.deactivate()
-            time.sleep(1)
-            #print( u'[MENU] enter_handle: {} is {}'.format( name, state ) )
-            #print( u'exit!' )
-
-    def right_handle(self,name,state):
-        if state=='Down':
-            print( u'[MENU] rght_handle: {} is {}'.format( name, state ) )    
-
-    def left_handle(self,name,state):
-        if state=='Down':
-            print( u'[MENU] left_handle: {} is {}'.format( name, state ) )    
-        
-    def up_handle(self,name,state):
-        if state=='Down':
-            if self.pos  > 0:
-                self.pos=self.pos-1
-            self.oled.display_timeout=self.oled.display_timeout_d
-            image=self.drow()
-            self.oled.lock.acquire()
-            self.oled.image = image
-            self.oled.lock.release()
-            self.oled.show()
-        
-    def down_handle(self,name,state):
-        if state=='Down':
-            if self.pos < (len(self.menu)-1):
-                self.pos=self.pos+1
-            self.oled.display_timeout=self.oled.display_timeout_d
-            self.oled.lock.acquire()
-            self.oled.image = self.drow()
-            self.oled.lock.release()
-            self.oled.show()
-            
 
 class drowinfo:
     def __init__(self, oled, font=None ):
