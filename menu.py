@@ -64,8 +64,8 @@ class menu:
         draw = ImageDraw.Draw(image)
         buf='- MENU -'
         (sx,sy)=draw.textsize( buf, font=self.font, spacing=self.vspace )
-        draw.rectangle( [(0,0),(self.size[0]-1,sy+4)], fill=self.color, outline=self.bgcolor, width=1 )
-        draw.text( ((self.size[0]-sx)//2,2), buf, font=self.font, spacing=self.vspace, fill = self.bgcolor )
+        draw.rectangle( [(0,0),(self.size[0]-1,sy+1)], fill=self.color, outline=self.bgcolor, width=1 )
+        draw.text( ((self.size[0]-sx)//2,0), buf, font=self.font, spacing=self.vspace, fill = self.bgcolor, stroke_fill=2 )
         buf = self.menu[self.pos]["text"] if text==None else text
         (sx,sy)=draw.multiline_textsize( buf, font=self.font, spacing=self.vspace )
         x=(self.size[0]-sx)//2
